@@ -2,18 +2,7 @@ public static string RenderPageWithSetupsAndTeardowns(PageData pageData, bool is
 {
     try 
     {
-        var isTestPage = pageData.HasAttribute("Test");
-        if (isTestPage) {
-            var testPage = pageData.GetWikiPage();
-            var newPageContent = new StringBuilder();
-            
-            IncludeSetupPages(testPage, newPageContent, isSuite);            
-            newPageContent.Append(pageData.GetContent());
-            
-            IncludeTeardownPages(testPage, newPageContent, isSuite);
-            pageData.SetContent(newPageContent.ToString());
-        }
-        
+        if (IsTestPage(pageData)) IncludeSetupAndTeardownPages(pageData, isSuite);
         return pageData.GetHtml();
     } catch (Exception e)
     {
