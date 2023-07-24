@@ -8,7 +8,7 @@ public class UserValidator
         if (user != null)
         {
             string codedPhrase = user.GetPhraseEncodedByPassword();
-            string phrase = cryptographer.Decrypt(codedPhrase, password);
+            string phrase = _cryptographer.Decrypt(codedPhrase, password);
 
             if ("Valid Password".Equals(phrase)) 
             {
