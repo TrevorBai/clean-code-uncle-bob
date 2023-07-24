@@ -12,8 +12,11 @@ public class UserValidator
 
             if ("Valid Password".Equals(phrase)) 
             {
-                /* Red line, why initialize the session here? Doing too much stuff. */              
+                /* Red line, why initialize the session here? Doing too much stuff. 
+                 * This is called temporal coupling, it's confusing, especially when
+                 * hidden as a side effect. */
                 // Session.Initialize();
+                
                 return true;
             }
         }
