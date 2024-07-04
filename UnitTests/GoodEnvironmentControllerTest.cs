@@ -1,4 +1,25 @@
 @Test
+public void TurnOnCoolerAndBlowerIfTooHot()
+{
+    TooHot();
+    AssertEquals("hBChl", _hw.GetState());
+}
+
+@Test
+public void TurnOnHeaterAndBlowerIfTooCold()
+{
+    TooCold();
+    AssertEquals("HBchl", _hw.GetState());
+}
+
+@Test
+public void TurnOnHiTempAlarmAtThreshold()
+{
+    WayTooHot();
+    AssertEquals("hBCHl", _hw.GetState());
+}
+
+@Test
 public void TurnOnLoTempAlarmAtThreshold()
 {
     // 1. Encapsulate all the unnecessary details
