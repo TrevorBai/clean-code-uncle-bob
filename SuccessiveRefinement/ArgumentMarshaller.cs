@@ -15,4 +15,6 @@ private abstract class ArgumentMarshaller
     public int GetInteger() { return _integerValue; }
 
     public abstract void Set(string s);
+
+    public object Get() { return null; }
 }
