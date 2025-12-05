@@ -1,10 +1,7 @@
 private abstract class ArgumentMarshaller
 {
-    protected bool BoolValue = false;
     private string _stringValue;
     private int _integerValue;
-
-    public bool GetBool() { return BoolValue; }
 
     public void SetString(string s) { _stringValue = s; }
 
