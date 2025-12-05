@@ -4,8 +4,6 @@ private abstract class ArgumentMarshaller
     private string _stringValue;
     private int _integerValue;
 
-    public void SetBool(bool value) { BoolValue = value; }
-
     public bool GetBool() { return BoolValue; }
 
     public void SetString(string s) { _stringValue = s; }
