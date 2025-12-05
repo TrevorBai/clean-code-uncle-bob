@@ -1,0 +1,6 @@
+private class IntegerArgumentMarshaller : ArgumentMarshaller
+{
+
+
+
+}
