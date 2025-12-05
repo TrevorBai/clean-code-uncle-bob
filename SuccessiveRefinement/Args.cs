@@ -4,7 +4,7 @@ public class Args
     private string[] _args;
     private bool _valid = true;
     private ISet<char> _unexpectedArguments = new SortedSet<char>();
-    private IDictionary<char, bool> _boolArgs = new Dictionary<char, bool>();
+    private IDictionary<char, ArgumentMarshaller> _boolArgs = new Dictionary<char, ArgumentMarshaller>();
     private IDictionary<char, string> _stringArgs = new Dictionary<char, string>();
     private IDictionary<char, int> _intArgs = new Dictionary<char, int>();
     private ISet<char> _argsFound = new HashSet<char>();
@@ -60,8 +60,8 @@ public class Args
         var elementId = element[0];
         string elementTail = element.Substring(1);
         ValidateSchemaElementId(elementId);
-        if (IsboolSchemaElement(elementTail))
-            ParseboolSchemaElement(elementId);
+        if (IsBoolSchemaElement(elementTail))
+            ParseBoolSchemaElement(elementId);
         else if (IsStringSchemaElement(elementTail))
             ParseStringSchemaElement(elementId);
         else if (IsIntegerSchemaElement(elementTail))
@@ -78,10 +78,10 @@ public class Args
             throw new FormatException("Bad character:" + elementId + "in Args format: " + _schema);
     }
 
-    private void ParseboolSchemaElement(char elementId)
+    private void ParseBoolSchemaElement(char elementId)
     {
         if (!_boolArgs.ContainsKey(elementId))
-            _boolArgs.Add(elementId, false);
+            _boolArgs.Add(elementId, new BoolArgumentMarshaller());
     }
     
     private void ParseStringSchemaElement(char elementId)
@@ -96,7 +96,7 @@ public class Args
             _intArgs.Add(elementId, 0);
     }
 
-    private bool IsboolSchemaElement(string elementTail)
+    private bool IsBoolSchemaElement(string elementTail)
     {
         return elementTail.Length == 0;
     }
@@ -146,8 +146,8 @@ public class Args
 
     private bool SetArgument(char argChar)
     {
-        if (IsboolArg(argChar))
-            SetboolArg(argChar, true);
+        if (IsBoolArg(argChar))
+            SetBoolArg(argChar, true);
         else if (IsStringArg(argChar))
             SetStringArg(argChar);
         else if (IsIntArg(argChar))
@@ -157,14 +157,14 @@ public class Args
         return true;
     }
 
-    private bool IsboolArg(char argChar) { return _boolArgs.ContainsKey(argChar); }
+    private bool IsBoolArg(char argChar) { return _boolArgs.ContainsKey(argChar); }
 
-    private void SetboolArg(char argChar, bool value)
+    private void SetBoolArg(char argChar, bool value)
     {
         if (!_boolArgs.ContainsKey(argChar))
-                _boolArgs.Add(argChar, value);
+                _boolArgs.Add(argChar, new BoolArgumentMarshaller(value));
         else 
-            _boolArgs[argChar] = value;
+            _boolArgs[argChar] = new BoolArgumentMarshaller(value);
     }
 
     private bool IsStringArg(char argChar) { return _stringArgs.ContainsKey(argChar); }
@@ -258,8 +258,6 @@ public class Args
         return message.ToString();
     }
 
-    private bool FalseIfNull(bool b) { return b != null && b; }
-
     private int ZeroIfNull(int i) { return i == null ? 0 : i; }
 
     private string BlankIfNull(string s) { return s == null ? string.Empty : s; }
@@ -268,7 +266,11 @@ public class Args
 
     public int GetInt(char arg) { return ZeroIfNull(_intArgs[arg]); }
 
-    public bool GetBool(char arg) { return FalseIfNull(_boolArgs[arg]); }
+    public bool GetBool(char arg) 
+    {
+        var am = _boolArgs[arg];
+        return am != null && am.GetBool();
+    }
 
     public bool Has(char arg) { return _argsFound.Contains(arg); }
 
