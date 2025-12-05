@@ -1,12 +1,12 @@
-private class ArgumentMarshaller
+private abstract class ArgumentMarshaller
 {
-    private bool _boolValue = false;
+    protected bool BoolValue = false;
     private string _stringValue;
     private int _integerValue;
 
-    public void SetBool(bool value) { _boolValue = value; }
+    public void SetBool(bool value) { BoolValue = value; }
 
-    public bool GetBool() { return _boolValue; }
+    public bool GetBool() { return BoolValue; }
 
     public void SetString(string s) { _stringValue = s; }
 
@@ -15,4 +15,6 @@ private class ArgumentMarshaller
     public void SetInteger(int i) { _integerValue = i; }
 
     public int GetInteger() { return _integerValue; }
+
+    public abstract void Set(string s);
 }
