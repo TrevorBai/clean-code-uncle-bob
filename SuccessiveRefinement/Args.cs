@@ -6,7 +6,7 @@ public class Args
     private ISet<char> _unexpectedArguments = new SortedSet<char>();
     private IDictionary<char, ArgumentMarshaller> _boolArgs = new Dictionary<char, ArgumentMarshaller>();
     private IDictionary<char, ArgumentMarshaller> _stringArgs = new Dictionary<char, ArgumentMarshaller>();
-    private IDictionary<char, int> _intArgs = new Dictionary<char, int>();
+    private IDictionary<char, ArgumentMarshaller> _intArgs = new Dictionary<char, ArgumentMarshaller>();
     private ISet<char> _argsFound = new HashSet<char>();
     private int _currentArgument;
     private char _errorArgumentId = '\0';
@@ -93,7 +93,7 @@ public class Args
     private void ParseIntegerSchemaElement(char elementId)
     {
         if (!_intArgs.ContainsKey(elementId))
-            _intArgs.Add(elementId, 0);
+            _intArgs.Add(elementId, new IntegerArgumentMarshaller());
     }
 
     private bool IsBoolSchemaElement(string elementTail)
@@ -196,9 +196,8 @@ public class Args
         {
             parameter = _args[_currentArgument];
             if (!_intArgs.ContainsKey(argChar))
-                _intArgs.Add(argChar, int.Parse(parameter));
-            else 
-                _intArgs[argChar] = int.Parse(parameter);
+                _intArgs.Add(argChar, new IntegerArgumentMarshaller());
+             _intArgs[argChar].SetInteger(int.Parse(parameter));
         }
         catch (IndexOutOfRangeException e)
         {
@@ -214,9 +213,7 @@ public class Args
             _errorParameter = parameter;
             _errorCode = ErrorCode.INVALID_INTEGER;
             throw new ArgsException();
-        }
-
-        
+        }   
     }
 
     public int Cardinality() { return _argsFound.Count; }
@@ -256,15 +253,17 @@ public class Args
         return message.ToString();
     }
 
-    private int ZeroIfNull(int i) { return i == null ? 0 : i; }
-
     public string GetString(char arg) 
     { 
         var am = _stringArgs[arg];
         return am == null ? string.Empty : am.GetString(); 
     }
 
-    public int GetInt(char arg) { return ZeroIfNull(_intArgs[arg]); }
+    public int GetInt(char arg) 
+    { 
+        var am = _intArgs[arg];
+        return am == null ? 0 : am.GetInteger(); 
+    }
 
     public bool GetBool(char arg) 
     {
