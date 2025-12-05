@@ -16,5 +16,5 @@ private abstract class ArgumentMarshaller
 
     public abstract void Set(string s);
 
-    public object Get() { return null; }
+    public abstract object Get();
 }
