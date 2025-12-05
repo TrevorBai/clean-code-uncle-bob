@@ -268,7 +268,7 @@ public class Args
     public bool GetBool(char arg) 
     {
         var am = _boolArgs[arg];
-        return am != null && am.GetBool();
+        return am != null && (bool)am.Get();
     }
 
     public bool Has(char arg) { return _argsFound.Contains(arg); }
