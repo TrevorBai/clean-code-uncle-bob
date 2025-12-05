@@ -5,7 +5,7 @@ public class Args
     private bool _valid = true;
     private ISet<char> _unexpectedArguments = new SortedSet<char>();
     private IDictionary<char, ArgumentMarshaller> _boolArgs = new Dictionary<char, ArgumentMarshaller>();
-    private IDictionary<char, string> _stringArgs = new Dictionary<char, string>();
+    private IDictionary<char, ArgumentMarshaller> _stringArgs = new Dictionary<char, ArgumentMarshaller>();
     private IDictionary<char, int> _intArgs = new Dictionary<char, int>();
     private ISet<char> _argsFound = new HashSet<char>();
     private int _currentArgument;
@@ -87,7 +87,7 @@ public class Args
     private void ParseStringSchemaElement(char elementId)
     {
         if (!_stringArgs.ContainsKey(elementId))
-            _stringArgs.Add(elementId, "");
+            _stringArgs.Add(elementId, new StringArgumentMarshaller());
     }
 
     private void ParseIntegerSchemaElement(char elementId)
@@ -162,9 +162,8 @@ public class Args
     private void SetBoolArg(char argChar, bool value)
     {
         if (!_boolArgs.ContainsKey(argChar))
-                _boolArgs.Add(argChar, new BoolArgumentMarshaller(value));
-        else 
-            _boolArgs[argChar] = new BoolArgumentMarshaller(value);
+                _boolArgs.Add(argChar, new BoolArgumentMarshaller());
+        _boolArgs[argChar].SetBool(value);
     }
 
     private bool IsStringArg(char argChar) { return _stringArgs.ContainsKey(argChar); }
@@ -175,9 +174,8 @@ public class Args
         try
         {
             if (!_stringArgs.ContainsKey(argChar))
-                _stringArgs.Add(argChar, _args[_currentArgument]);
-            else
-                _stringArgs[arcChar] = _args[_currentArgument];
+                _stringArgs.Add(argChar, new StringArgumentMarshaller());
+            _stringArgs[arcChar].SetString(_args[_currentArgument]);
         }
         catch (IndexOutOfRangeException e)
         {
@@ -260,9 +258,11 @@ public class Args
 
     private int ZeroIfNull(int i) { return i == null ? 0 : i; }
 
-    private string BlankIfNull(string s) { return s == null ? string.Empty : s; }
-
-    public string GetString(char arg) { return BlankIfNull(_stringArgs[arg]); }
+    public string GetString(char arg) 
+    { 
+        var am = _stringArgs[arg];
+        return am == null ? string.Empty : am.GetString(); 
+    }
 
     public int GetInt(char arg) { return ZeroIfNull(_intArgs[arg]); }
 
