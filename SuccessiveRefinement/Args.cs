@@ -1,8 +1,284 @@
 public class Args
 {
+    private string _schema;
+    private string[] _args;
+    private bool _valid = true;
+    private ISet<char> _unexpectedArguments = new SortedSet<char>();
+    private IDictionary<char, bool> _boolArgs = new Dictionary<char, bool>();
+    private IDictionary<char, string> _stringArgs = new Dictionary<char, string>();
+    private IDictionary<char, int> _intArgs = new Dictionary<char, int>();
+    private ISet<char> _argsFound = new HashSet<char>();
+    private int _currentArgument;
+    private char _errorArgumentId = '\0';
+    private string _errorParameter = "TILT";
+    private ErrorCode _errorCode = ErrorCode.OK;
+
+    private enum ErrorCode
+    {
+        OK,
+        MISSING_STRING,
+        MISSING_INTEGER,
+        INVALID_INTEGER,
+        UNEXPECTED_ARGUMENT
+    }
+
+    public Args(string schema, string[] args)
+    {
+        _schema = schema;
+        _args = args;
+        _valid = Parse();
+    }
+
+    private bool Parse()
+    {
+        if (_schema.Length == 0 && _args.Length == 0) return true;
+        ParseSchema();
+        try 
+        {
+            ParseArguments();
+        }
+        catch (ArgsException e)
+        {}
+        return _valid;
+    }
+
+    private bool ParseSchema()
+    {
+        foreach (var element in _schema.Split(','))
+        {
+            if (element.Length > 0)
+            {
+                string trimmedElement = element.Trim();
+                ParseSchemaElement(trimmedElement);
+            }        
+        }
+        return true;
+    }
+
+    private void ParseSchemaElement(stirng element)
+    {
+        var elementId = element[0];
+        string elementTail = element.Substring(1);
+        ValidateSchemaElementId(elementId);
+        if (IsboolSchemaElement(elementTail))
+            ParseboolSchemaElement(elementId);
+        else if (IsStringSchemaElement(elementTail))
+            ParseStringSchemaElement(elementId);
+        else if (IsIntegerSchemaElement(elementTail))
+            ParseIntegerSchemaElement(elementId);
+        else
+        {
+            throw new FormatException(string.Format("Argument: {0} has invalid format: {1}.", elementId, elementTail));
+        }      
+    }
+
+    private void ValidateSchemaElementId(char elementId)
+    {
+        if (!char.IsLetter(elementId))
+            throw new FormatException("Bad character:" + elementId + "in Args format: " + _schema);
+    }
+
+    private void ParseboolSchemaElement(char elementId)
+    {
+        if (!_boolArgs.ContainsKey(elementId))
+            _boolArgs.Add(elementId, false);
+    }
+    
+    private void ParseStringSchemaElement(char elementId)
+    {
+        if (!_stringArgs.ContainsKey(elementId))
+            _stringArgs.Add(elementId, "");
+    }
+
+    private void ParseIntegerSchemaElement(char elementId)
+    {
+        if (!_intArgs.ContainsKey(elementId))
+            _intArgs.Add(elementId, 0);
+    }
+
+    private bool IsboolSchemaElement(string elementTail)
+    {
+        return elementTail.Length == 0;
+    }
+
+    private bool IsStringSchemaElement(string elementTail)
+    {
+        return elementTail.Equals("*");
+    }
+
+    private bool IsIntegerSchemaElement(string elementTail)
+    {
+        return elementTail.Equals("#");
+    }
+
+    private bool ParseArguments()
+    {
+        for (var currentArgument = 0; currentArgument < _args.Length; currentArgument++)
+        {
+            var arg = _args[currentArgument];
+            ParseArgument(arg);
+        }
+        return true;
+    }
+
+    private void ParseArgument(string arg)
+    {
+        if (arg.StartsWith("-")) ParseElements(arg);
+    }
+
+    private void ParseElements(string arg)
+    {
+        for (var i = 1; i < arg.Length; i++)
+        {
+            ParseElement(arg[i]);
+        }
+    }
+
+    private void ParseElement(char argChar)
+    {
+        if (SetArgument(argChar))
+            _argsFound.Add(argChar);
+        else
+            _unexpectedArguments.Add(argChar);
+            _errorCode = ErrorCode.UNEXPECTED_ARGUMENT;
+            _valid = false;
+    }
+
+    private bool SetArgument(char argChar)
+    {
+        if (IsboolArg(argChar))
+            SetboolArg(argChar, true);
+        else if (IsStringArg(argChar))
+            SetStringArg(argChar);
+        else if (IsIntArg(argChar))
+            SetIntArg(argChar);
+        else
+            return false;
+        return true;
+    }
+
+    private bool IsboolArg(char argChar) { return _boolArgs.ContainsKey(argChar); }
+
+    private void SetboolArg(char argChar, bool value)
+    {
+        if (!_boolArgs.ContainsKey(argChar))
+                _boolArgs.Add(argChar, value);
+        else 
+            _boolArgs[argChar] = value;
+    }
+
+    private bool IsStringArg(char argChar) { return _stringArgs.ContainsKey(argChar); }
+
+    private void SetStringArg(char argChar)
+    {
+        _currentArgument++;
+        try
+        {
+            if (!_stringArgs.ContainsKey(argChar))
+                _stringArgs.Add(argChar, _args[_currentArgument]);
+            else
+                _stringArgs[arcChar] = _args[_currentArgument];
+        }
+        catch (IndexOutOfRangeException e)
+        {
+            _valid = false;
+            _errorArgumentId = argChar;
+            _errorCode = ErrorCode.MISSING_INTEGER;
+            throw new ArgsException();
+        }
+    }
+
+    private bool IsIntArg(char argChar) { return _intArgs.ContainsKey(argChar); }
+
+    private void SetIntArg(char argChar)
+    {
+        _currentArgument++;
+        string parameter = null;
+        try
+        {
+            parameter = _args[_currentArgument];
+            if (!_intArgs.ContainsKey(argChar))
+                _intArgs.Add(argChar, int.Parse(parameter));
+            else 
+                _intArgs[argChar] = int.Parse(parameter);
+        }
+        catch (IndexOutOfRangeException e)
+        {
+            _valid = false;
+            _errorArgumentId = argChar;
+            _errorCode = ErrorCode.MISSING_INTEGER;
+            throw new ArgsException();
+        }
+        catch (FormatException e)
+        {
+            _valid = false;
+            _errorArgumentId = argChar;
+            _errorParameter = parameter;
+            _errorCode = ErrorCode.INVALID_INTEGER;
+            throw new ArgsException();
+        }
+
+        
+    }
+
+    public int Cardinality() { return _argsFound.Count; }
+
+    public string Usage()
+    {
+        if (_schema.Length > 0)
+            return "-[" + _schema + "]";
+        else
+            return string.Empty;        
+    }
+
+    public string ErrorMessage()
+    {
+        switch (_errorCode)
+            case OK:
+                throw new Exception("TILT: Should not get here.");
+            case UNEXPECTED_ARGUMENT:
+                return UnexpectedArgumetnMessage();
+            case MISSING_STRING:
+                return string.Format("Could not find string parameter for {0}.", _errorArgumentId);
+            case INVALID_INTEGER:
+                return string.Format("Argument {0} expects an integer but was {0}.", _errorArgumentId, _errorParameter);
+            case MISSING)INTEGER:
+                return string.Format("Could not find integer parameter for {0}.", _errorArgumentId);
+        return string.Empty;
+    }
+
+    private string UnexpectedArgumentMessage()
+    {
+        var message = new StringBuilder("Argument (s) -");
+        foreach (var c in _unexpectedArguments)
+        {
+            message.Append(c);
+        }
+        message.Append(" unexpected.");
+        return message.ToString();
+    }
+
+    private bool FalseIfNull(bool b) { return b != null && b; }
+
+    private int ZeroIfNull(int i) { return i == null ? 0 : i; }
+
+    private string BlankIfNull(string s) { return s == null ? string.Empty : s; }
+
+    public string GetString(char arg) { return BlankIfNull(_stringArgs[arg]); }
+
+    public int GetInt(char arg) { return ZeroIfNull(_intArgs[arg]); }
+
+    public bool GetBool(char arg) { return FalseIfNull(_boolArgs[arg]); }
+
+    public bool Has(char arg) { return _argsFound.Contains(arg); }
+
+    public bool IsValid() { return _valid; }
+
+    private class ArgsException : Exception
+    {
 
 
-
-
+        
+    }
     
 }
