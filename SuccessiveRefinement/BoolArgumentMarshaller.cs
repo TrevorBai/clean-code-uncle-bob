@@ -1,6 +1,8 @@
 private class BoolArgumentMarshaller : ArgumentMarshaller
 {
-    public override void Set(string s) { BoolValue = true; }
+    private bool _boolValue = false;
 
-    public override object Get() { return BoolValue; }
+    public override void Set(string s) { _boolValue = true; }
+
+    public override object Get() { return _boolValue; }
 }
