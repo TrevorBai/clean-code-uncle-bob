@@ -163,7 +163,7 @@ public class Args
     {
         if (!_boolArgs.ContainsKey(argChar))
                 _boolArgs.Add(argChar, new BoolArgumentMarshaller());
-        _boolArgs[argChar].SetBool(value);
+        _boolArgs[argChar].Set("true");
     }
 
     private bool IsStringArg(char argChar) { return _stringArgs.ContainsKey(argChar); }
