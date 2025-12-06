@@ -1,11 +1,6 @@
 private abstract class ArgumentMarshaller
-{
-    private string _stringValue;
+{  
     private int _integerValue;
-
-    public void SetString(string s) { _stringValue = s; }
-
-    public string GetString() { return _stringValue == null ? string.Empty : _stringValue; }
 
     public void SetInteger(int i) { _integerValue = i; }
 
