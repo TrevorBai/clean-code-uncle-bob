@@ -7,6 +7,7 @@ public class Args
     private IDictionary<char, ArgumentMarshaller> _boolArgs = new Dictionary<char, ArgumentMarshaller>();
     private IDictionary<char, ArgumentMarshaller> _stringArgs = new Dictionary<char, ArgumentMarshaller>();
     private IDictionary<char, ArgumentMarshaller> _intArgs = new Dictionary<char, ArgumentMarshaller>();
+    private IDictionary<char, ArgumentMarshaller> _marshallers = new Dictionary<char, ArgumentMarshaller>();
     private ISet<char> _argsFound = new HashSet<char>();
     private int _currentArgument;
     private char _errorArgumentId = '\0';
@@ -80,20 +81,29 @@ public class Args
 
     private void ParseBoolSchemaElement(char elementId)
     {
+        var m = new BoolArgumentMarshaller();
         if (!_boolArgs.ContainsKey(elementId))
-            _boolArgs.Add(elementId, new BoolArgumentMarshaller());
+            _boolArgs.Add(elementId, m);
+        if (!_marshallers.ContainsKey(elementId))
+            _marshallers.Add(elementId, m);
     }
     
     private void ParseStringSchemaElement(char elementId)
     {
+        var m = new StringArgumentMarshaller();       
         if (!_stringArgs.ContainsKey(elementId))
-            _stringArgs.Add(elementId, new StringArgumentMarshaller());
+            _stringArgs.Add(elementId, m);
+        if (!_marshallers.ContainsKey(elementId))
+            _marshallers.Add(elementId, m);
     }
 
     private void ParseIntegerSchemaElement(char elementId)
     {
+        var m = new IntegerArgumentMarshaller();       
         if (!_intArgs.ContainsKey(elementId))
-            _intArgs.Add(elementId, new IntegerArgumentMarshaller());
+            _intArgs.Add(elementId, m);
+        if (!_marshallers.ContainsKey(elementId))
+            _marshallers.Add(elementId, m);
     }
 
     private bool IsBoolSchemaElement(string elementTail)
