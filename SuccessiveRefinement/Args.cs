@@ -175,7 +175,7 @@ public class Args
         {
             if (!_stringArgs.ContainsKey(argChar))
                 _stringArgs.Add(argChar, new StringArgumentMarshaller());
-            _stringArgs[arcChar].SetString(_args[_currentArgument]);
+            _stringArgs[arcChar].Set(_args[_currentArgument]);
         }
         catch (IndexOutOfRangeException e)
         {
