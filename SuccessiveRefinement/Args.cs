@@ -163,7 +163,13 @@ public class Args
     {
         if (!_boolArgs.ContainsKey(argChar))
                 _boolArgs.Add(argChar, new BoolArgumentMarshaller());
-        _boolArgs[argChar].Set("true");
+        try
+        {
+            _boolArgs[argChar].Set("true");          
+        }
+        catch (ArgsException e)
+        {          
+        }
     }
 
     private bool IsStringArg(char argChar) { return _stringArgs.ContainsKey(argChar); }
@@ -197,7 +203,7 @@ public class Args
             parameter = _args[_currentArgument];
             if (!_intArgs.ContainsKey(argChar))
                 _intArgs.Add(argChar, new IntegerArgumentMarshaller());
-             _intArgs[argChar].SetInteger(int.Parse(parameter));
+             _intArgs[argChar].Set(int.Parse(parameter));
         }
         catch (IndexOutOfRangeException e)
         {
@@ -206,13 +212,13 @@ public class Args
             _errorCode = ErrorCode.MISSING_INTEGER;
             throw new ArgsException();
         }
-        catch (FormatException e)
+        catch (ArgsException e)
         {
             _valid = false;
             _errorArgumentId = argChar;
             _errorParameter = parameter;
             _errorCode = ErrorCode.INVALID_INTEGER;
-            throw new ArgsException();
+            throw e;
         }   
     }
 
@@ -262,7 +268,7 @@ public class Args
     public int GetInt(char arg) 
     { 
         var am = _intArgs[arg];
-        return am == null ? 0 : am.GetInteger(); 
+        return am == null ? 0 : (int)am.Get(); 
     }
 
     public bool GetBool(char arg) 
