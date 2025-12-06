@@ -256,7 +256,7 @@ public class Args
     public string GetString(char arg) 
     { 
         var am = _stringArgs[arg];
-        return am == null ? string.Empty : am.GetString(); 
+        return am == null ? string.Empty : (string)am.Get();
     }
 
     public int GetInt(char arg) 
