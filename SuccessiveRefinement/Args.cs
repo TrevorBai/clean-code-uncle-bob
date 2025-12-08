@@ -167,7 +167,11 @@ public class Args
         return true;
     }
 
-    private bool IsBoolArg(char argChar) { return _boolArgs.ContainsKey(argChar); }
+    private bool IsBoolArg(char argChar) 
+    {
+        var m = _marshallers[argChar];
+        return m is BoolArgumentMarshaller;
+    }
 
     private void SetBoolArg(char argChar, bool value)
     {
@@ -182,7 +186,11 @@ public class Args
         }
     }
 
-    private bool IsStringArg(char argChar) { return _stringArgs.ContainsKey(argChar); }
+    private bool IsStringArg(char argChar) 
+    {
+        var m = _marshallers[argChar];
+        return m is StringArgumentMarshaller;
+    }
 
     private void SetStringArg(char argChar)
     {
@@ -202,7 +210,11 @@ public class Args
         }
     }
 
-    private bool IsIntArg(char argChar) { return _intArgs.ContainsKey(argChar); }
+    private bool IsIntArg(char argChar) 
+    {
+        var m = _marshallers[argChar];      
+        return m is IntegerArgumentMarshaller; 
+    }
 
     private void SetIntArg(char argChar)
     {
