@@ -157,70 +157,67 @@ public class Args
     private bool SetArgument(char argChar)
     {
         var m = _marshallers[argChar];
-        if (m is BoolArgumentMarshaller)
-            SetBoolArg(argChar);
-        else if (m is StringArgumentMarshaller)
-            SetStringArg(argChar);
-        else if (m is IntegerArgumentMarshaller)
-            SetIntArg(argChar);
-        else
-            return false;
+        try
+        {
+            if (m is BoolArgumentMarshaller)
+                SetBoolArg(m);
+            else if (m is StringArgumentMarshaller)
+                SetStringArg(m);
+            else if (m is IntegerArgumentMarshaller)
+                SetIntArg(m);
+            else
+                return false;       
+        }
+        catch (ArgsException e)
+        {
+            _valid = false;
+            _errorArgumentId = argChar;
+            throw e;         
+        }   
         return true;
     }
 
-    private void SetBoolArg(char argChar)
+    private void SetBoolArg(ArgumentMarshaller m)
     {
-        if (!_boolArgs.ContainsKey(argChar))
-                _boolArgs.Add(argChar, new BoolArgumentMarshaller());
         try
         {
-            _boolArgs[argChar].Set("true");          
+            m.Set("true");        
         }
         catch (ArgsException e)
         {          
         }
     }
     
-    private void SetStringArg(char argChar)
+    private void SetStringArg(ArgumentMarshaller m)
     {
         _currentArgument++;
         try
         {
-            if (!_stringArgs.ContainsKey(argChar))
-                _stringArgs.Add(argChar, new StringArgumentMarshaller());
-            _stringArgs[arcChar].Set(_args[_currentArgument]);
+            m.Set(_args[_currentArgument]);
         }
         catch (IndexOutOfRangeException e)
         {
-            _valid = false;
-            _errorArgumentId = argChar;
             _errorCode = ErrorCode.MISSING_INTEGER;
             throw new ArgsException();
         }
     }
 
-    private void SetIntArg(char argChar)
+    private void SetIntArg(ArgumentMarshaller m)
     {
         _currentArgument++;
         string parameter = null;
         try
         {
             parameter = _args[_currentArgument];
-            if (!_intArgs.ContainsKey(argChar))
-                _intArgs.Add(argChar, new IntegerArgumentMarshaller());
-             _intArgs[argChar].Set(int.Parse(parameter));
+            m.Set(parameter);
         }
         catch (IndexOutOfRangeException e)
         {
-            _valid = false;
-            _errorArgumentId = argChar;
             _errorCode = ErrorCode.MISSING_INTEGER;
             throw new ArgsException();
         }
         catch (ArgsException e)
         {
-            _valid = false;
-            _errorArgumentId = argChar;
             _errorParameter = parameter;
             _errorCode = ErrorCode.INVALID_INTEGER;
             throw e;
