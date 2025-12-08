@@ -4,7 +4,6 @@ public class Args
     private string[] _args;
     private bool _valid = true;
     private ISet<char> _unexpectedArguments = new SortedSet<char>();
-    private IDictionary<char, ArgumentMarshaller> _intArgs = new Dictionary<char, ArgumentMarshaller>();
     private IDictionary<char, ArgumentMarshaller> _marshallers = new Dictionary<char, ArgumentMarshaller>();
     private ISet<char> _argsFound = new HashSet<char>();
     private int _currentArgument;
@@ -90,12 +89,9 @@ public class Args
     }
 
     private void ParseIntegerSchemaElement(char elementId)
-    {
-        var m = new IntegerArgumentMarshaller();       
-        if (!_intArgs.ContainsKey(elementId))
-            _intArgs.Add(elementId, m);
+    { 
         if (!_marshallers.ContainsKey(elementId))
-            _marshallers.Add(elementId, m);
+            _marshallers.Add(elementId, new IntegerArgumentMarshaller());
     }
 
     private bool IsBoolSchemaElement(string elementTail)
@@ -268,8 +264,15 @@ public class Args
 
     public int GetInt(char arg) 
     { 
-        var am = _intArgs[arg];
-        return am == null ? 0 : (int)am.Get(); 
+        var am = _marshallers[arg];
+        try
+        {
+            return am == null ? 0 : (int)am.Get(); 
+        }
+        catch (Exception e)
+        {
+            return 0;
+        }      
     }
 
     public bool GetBool(char arg) 
