@@ -157,20 +157,15 @@ public class Args
     private bool SetArgument(char argChar)
     {
         var m = _marshallers[argChar];
-        if (IsBoolArg(m))
+        if (m is BoolArgumentMarshaller)
             SetBoolArg(argChar);
-        else if (IsStringArg(m))
+        else if (m is StringArgumentMarshaller)
             SetStringArg(argChar);
-        else if (IsIntArg(m))
+        else if (m is IntegerArgumentMarshaller)
             SetIntArg(argChar);
         else
             return false;
         return true;
-    }
-
-    private bool IsBoolArg(ArgumentMarshaller m) 
-    {
-        return m is BoolArgumentMarshaller;
     }
 
     private void SetBoolArg(char argChar)
@@ -185,12 +180,7 @@ public class Args
         {          
         }
     }
-
-    private bool IsStringArg(ArgumentMarshaller m) 
-    {
-        return m is StringArgumentMarshaller;
-    }
-
+    
     private void SetStringArg(char argChar)
     {
         _currentArgument++;
@@ -207,11 +197,6 @@ public class Args
             _errorCode = ErrorCode.MISSING_INTEGER;
             throw new ArgsException();
         }
-    }
-
-    private bool IsIntArg(ArgumentMarshaller m) 
-    {   
-        return m is IntegerArgumentMarshaller; 
     }
 
     private void SetIntArg(char argChar)
