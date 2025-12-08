@@ -233,7 +233,7 @@ public class Args
                 return string.Format("Could not find string parameter for {0}.", _errorArgumentId);
             case INVALID_INTEGER:
                 return string.Format("Argument {0} expects an integer but was {1}.", _errorArgumentId, _errorParameter);
-            case MISSING)INTEGER:
+            case MISSING_INTEGER:
                 return string.Format("Could not find integer parameter for {0}.", _errorArgumentId);
         return string.Empty;
     }
