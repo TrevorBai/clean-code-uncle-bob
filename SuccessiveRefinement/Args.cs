@@ -156,24 +156,24 @@ public class Args
 
     private bool SetArgument(char argChar)
     {
-        if (IsBoolArg(argChar))
-            SetBoolArg(argChar, true);
-        else if (IsStringArg(argChar))
+        var m = _marshallers[argChar];
+        if (IsBoolArg(m))
+            SetBoolArg(argChar);
+        else if (IsStringArg(m))
             SetStringArg(argChar);
-        else if (IsIntArg(argChar))
+        else if (IsIntArg(m))
             SetIntArg(argChar);
         else
             return false;
         return true;
     }
 
-    private bool IsBoolArg(char argChar) 
+    private bool IsBoolArg(ArgumentMarshaller m) 
     {
-        var m = _marshallers[argChar];
         return m is BoolArgumentMarshaller;
     }
 
-    private void SetBoolArg(char argChar, bool value)
+    private void SetBoolArg(char argChar)
     {
         if (!_boolArgs.ContainsKey(argChar))
                 _boolArgs.Add(argChar, new BoolArgumentMarshaller());
@@ -186,9 +186,8 @@ public class Args
         }
     }
 
-    private bool IsStringArg(char argChar) 
+    private bool IsStringArg(ArgumentMarshaller m) 
     {
-        var m = _marshallers[argChar];
         return m is StringArgumentMarshaller;
     }
 
@@ -210,9 +209,8 @@ public class Args
         }
     }
 
-    private bool IsIntArg(char argChar) 
-    {
-        var m = _marshallers[argChar];      
+    private bool IsIntArg(ArgumentMarshaller m) 
+    {   
         return m is IntegerArgumentMarshaller; 
     }
 
