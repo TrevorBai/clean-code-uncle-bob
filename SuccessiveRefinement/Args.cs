@@ -4,7 +4,6 @@ public class Args
     private string[] _args;
     private bool _valid = true;
     private ISet<char> _unexpectedArguments = new SortedSet<char>();
-    private IDictionary<char, ArgumentMarshaller> _boolArgs = new Dictionary<char, ArgumentMarshaller>();
     private IDictionary<char, ArgumentMarshaller> _stringArgs = new Dictionary<char, ArgumentMarshaller>();
     private IDictionary<char, ArgumentMarshaller> _intArgs = new Dictionary<char, ArgumentMarshaller>();
     private IDictionary<char, ArgumentMarshaller> _marshallers = new Dictionary<char, ArgumentMarshaller>();
@@ -81,11 +80,8 @@ public class Args
 
     private void ParseBoolSchemaElement(char elementId)
     {
-        var m = new BoolArgumentMarshaller();
-        if (!_boolArgs.ContainsKey(elementId))
-            _boolArgs.Add(elementId, m);
         if (!_marshallers.ContainsKey(elementId))
-            _marshallers.Add(elementId, m);
+            _marshallers.Add(elementId, new BoolArgumentMarshaller());
     }
     
     private void ParseStringSchemaElement(char elementId)
@@ -275,8 +271,17 @@ public class Args
 
     public bool GetBool(char arg) 
     {
-        var am = _boolArgs[arg];
-        return am != null && (bool)am.Get();
+        var am = _marshallers[arg];
+        var b = false;
+        try
+        {
+            b = am != null && (bool)am.Get()
+        }
+        catch (InvalidCastException e)
+        {
+            b = false;
+        }  
+        return b;
     }
 
     public bool Has(char arg) { return _argsFound.Contains(arg); }
