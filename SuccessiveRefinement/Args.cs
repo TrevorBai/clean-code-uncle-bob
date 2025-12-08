@@ -4,7 +4,6 @@ public class Args
     private string[] _args;
     private bool _valid = true;
     private ISet<char> _unexpectedArguments = new SortedSet<char>();
-    private IDictionary<char, ArgumentMarshaller> _stringArgs = new Dictionary<char, ArgumentMarshaller>();
     private IDictionary<char, ArgumentMarshaller> _intArgs = new Dictionary<char, ArgumentMarshaller>();
     private IDictionary<char, ArgumentMarshaller> _marshallers = new Dictionary<char, ArgumentMarshaller>();
     private ISet<char> _argsFound = new HashSet<char>();
@@ -86,11 +85,8 @@ public class Args
     
     private void ParseStringSchemaElement(char elementId)
     {
-        var m = new StringArgumentMarshaller();       
-        if (!_stringArgs.ContainsKey(elementId))
-            _stringArgs.Add(elementId, m);
         if (!_marshallers.ContainsKey(elementId))
-            _marshallers.Add(elementId, m);
+            _marshallers.Add(elementId, new StringArgumentMarshaller());
     }
 
     private void ParseIntegerSchemaElement(char elementId)
@@ -259,8 +255,15 @@ public class Args
 
     public string GetString(char arg) 
     { 
-        var am = _stringArgs[arg];
-        return am == null ? string.Empty : (string)am.Get();
+        var am = _marshallers[arg];
+        try
+        {
+            return am == null ? string.Empty : (string)am.Get();
+        }
+        catch (InvalidCastException e)
+        {
+            return string.Empty;
+        }
     }
 
     public int GetInt(char arg) 
