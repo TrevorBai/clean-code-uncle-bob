@@ -1,7 +1,9 @@
+using System.Collections.Generic;
+
 public class Args
 {
     private string _schema;
-    private string[] _args;
+    private List<string> _argsList;
     private bool _valid = true;
     private ISet<char> _unexpectedArguments = new SortedSet<char>();
     private IDictionary<char, ArgumentMarshaller> _marshallers = new Dictionary<char, ArgumentMarshaller>();
@@ -23,13 +25,13 @@ public class Args
     public Args(string schema, string[] args)
     {
         _schema = schema;
-        _args = args;
+        _argsList = args.ToList();
         _valid = Parse();
     }
 
     private bool Parse()
     {
-        if (_schema.Length == 0 && _args.Length == 0) return true;
+        if (_schema.Length == 0 && _argsList.Count == 0) return true;
         ParseSchema();
         try 
         {
@@ -111,9 +113,8 @@ public class Args
 
     private bool ParseArguments()
     {
-        for (var currentArgument = 0; currentArgument < _args.Length; currentArgument++)
+        foreach (string arg in _argsList)
         {
-            var arg = _args[currentArgument];
             ParseArgument(arg);
         }
         return true;
@@ -181,7 +182,7 @@ public class Args
         _currentArgument++;
         try
         {
-            m.Set(_args[_currentArgument]);
+            m.Set(_argsList[_currentArgument]);
         }
         catch (IndexOutOfRangeException e)
         {
@@ -196,7 +197,7 @@ public class Args
         string parameter = null;
         try
         {
-            parameter = _args[_currentArgument];
+            parameter = _argsList[_currentArgument];
             m.Set(parameter);
         }
         catch (IndexOutOfRangeException e)
