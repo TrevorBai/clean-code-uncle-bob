@@ -4,11 +4,11 @@ public class Args
 {
     private string _schema;
     private List<string> _argsList;
+    private IEnumerator<string> _argsIterator;  // shared cursor
     private bool _valid = true;
     private ISet<char> _unexpectedArguments = new SortedSet<char>();
     private IDictionary<char, ArgumentMarshaller> _marshallers = new Dictionary<char, ArgumentMarshaller>();
     private ISet<char> _argsFound = new HashSet<char>();
-    private int _currentArgument;
     private char _errorArgumentId = '\0';
     private string _errorParameter = "TILT";
     private ErrorCode _errorCode = ErrorCode.OK;
@@ -113,8 +113,10 @@ public class Args
 
     private bool ParseArguments()
     {
-        foreach (string arg in _argsList)
+        _argsIterator = _argsList.GetEnumerator();
+        while (_argsIterator.MoveNext())
         {
+            string arg = _argsIterator.Current;
             ParseArgument(arg);
         }
         return true;
@@ -179,12 +181,12 @@ public class Args
     
     private void SetStringArg(ArgumentMarshaller m)
     {
-        _currentArgument++;
         try
         {
-            m.Set(_argsList[_currentArgument]);
+            _argsIterator.MoveNext();     
+            m.Set(_argsIterator.Current);
         }
-        catch (IndexOutOfRangeException e)
+        catch (InvalidOperationException e)
         {
             _errorCode = ErrorCode.MISSING_INTEGER;
             throw new ArgsException();
@@ -193,14 +195,14 @@ public class Args
 
     private void SetIntArg(ArgumentMarshaller m)
     {
-        _currentArgument++;
-        string parameter = null;
+        string parameter = null;        
         try
         {
-            parameter = _argsList[_currentArgument];
+            _argsIterator.MoveNext();            
+            parameter = _argsIterator.Current;
             m.Set(parameter);
         }
-        catch (IndexOutOfRangeException e)
+        catch (InvalidOperationException e)
         {
             _errorCode = ErrorCode.MISSING_INTEGER;
             throw new ArgsException();
