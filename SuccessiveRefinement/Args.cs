@@ -152,7 +152,7 @@ public class Args
         try
         {
             if (m is BoolArgumentMarshaller)
-                SetBoolArg(m, _argsIterator);
+                m.Set(_argsIterator);
             else if (m is StringArgumentMarshaller)
                 SetStringArg(m);
             else if (m is IntegerArgumentMarshaller)
@@ -165,11 +165,6 @@ public class Args
             throw e;         
         }   
         return true;
-    }
-
-    private void SetBoolArg(ArgumentMarshaller m, IEnumerator<string> argsIterator)
-    {
-        m.Set("true");
     }
     
     private void SetStringArg(ArgumentMarshaller m)
