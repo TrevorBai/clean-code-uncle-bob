@@ -148,16 +148,15 @@ public class Args
     private bool SetArgument(char argChar)
     {
         var m = _marshallers[argChar];
+        if (m == null) return false;
         try
         {
             if (m is BoolArgumentMarshaller)
-                SetBoolArg(m);
+                SetBoolArg(m, _argsIterator);
             else if (m is StringArgumentMarshaller)
                 SetStringArg(m);
             else if (m is IntegerArgumentMarshaller)
-                SetIntArg(m);
-            else
-                return false;       
+                SetIntArg(m);    
         }
         catch (ArgsException e)
         {
@@ -168,15 +167,9 @@ public class Args
         return true;
     }
 
-    private void SetBoolArg(ArgumentMarshaller m)
+    private void SetBoolArg(ArgumentMarshaller m, IEnumerator<string> argsIterator)
     {
-        try
-        {
-            m.Set("true");        
-        }
-        catch (ArgsException e)
-        {          
-        }
+        m.Set("true");
     }
     
     private void SetStringArg(ArgumentMarshaller m)
