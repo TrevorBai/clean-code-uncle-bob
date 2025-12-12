@@ -151,20 +151,15 @@ public class Args
         if (m == null) return false;
         try
         {
-            if (m is BoolArgumentMarshaller)
-                m.Set(_argsIterator);
-            else if (m is StringArgumentMarshaller)
-                m.Set(_argsIterator);
-            else if (m is IntegerArgumentMarshaller)
-                m.Set(_argsIterator);   
+            m.Set(_argsIterator);
+            return true;
         }
         catch (ArgsException e)
         {
             _valid = false;
             _errorArgumentId = argChar;
-            throw e;         
-        }   
-        return true;
+            return false;
+        }
     }
 
     public int Cardinality() { return _argsFound.Count; }
