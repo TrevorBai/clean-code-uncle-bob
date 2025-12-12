@@ -2,6 +2,8 @@ private class IntegerArgumentMarshaller : ArgumentMarshaller
 {
     private int _integerValue = 0;
 
+    public override void Set(IEnumerator<string> argsIterator) { }
+
     public override void Set(string s) 
     { 
         try
