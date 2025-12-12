@@ -2,7 +2,27 @@ private class IntegerArgumentMarshaller : ArgumentMarshaller
 {
     private int _integerValue = 0;
 
-    public override void Set(IEnumerator<string> argsIterator) { }
+    public override void Set(IEnumerator<string> argsIterator) 
+    { 
+        string parameter = null;        
+        try
+        {
+            argsIterator.MoveNext();            
+            parameter = argsIterator.Current;
+            Set(parameter);
+        }
+        catch (InvalidOperationException e)
+        {
+            _errorCode = ErrorCode.MISSING_INTEGER;
+            throw new ArgsException();
+        }
+        catch (ArgsException e)
+        {
+            _errorParameter = parameter;
+            _errorCode = ErrorCode.INVALID_INTEGER;
+            throw e;
+        }
+    }
 
     public override void Set(string s) 
     { 
