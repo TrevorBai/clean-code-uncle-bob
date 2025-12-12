@@ -154,9 +154,9 @@ public class Args
             if (m is BoolArgumentMarshaller)
                 m.Set(_argsIterator);
             else if (m is StringArgumentMarshaller)
-                SetStringArg(m);
+                m.Set(_argsIterator);
             else if (m is IntegerArgumentMarshaller)
-                SetIntArg(m);    
+                m.Set(_argsIterator);   
         }
         catch (ArgsException e)
         {
@@ -165,42 +165,6 @@ public class Args
             throw e;         
         }   
         return true;
-    }
-    
-    private void SetStringArg(ArgumentMarshaller m)
-    {
-        try
-        {
-            _argsIterator.MoveNext();     
-            m.Set(_argsIterator.Current);
-        }
-        catch (InvalidOperationException e)
-        {
-            _errorCode = ErrorCode.MISSING_INTEGER;
-            throw new ArgsException();
-        }
-    }
-
-    private void SetIntArg(ArgumentMarshaller m)
-    {
-        string parameter = null;        
-        try
-        {
-            _argsIterator.MoveNext();            
-            parameter = _argsIterator.Current;
-            m.Set(parameter);
-        }
-        catch (InvalidOperationException e)
-        {
-            _errorCode = ErrorCode.MISSING_INTEGER;
-            throw new ArgsException();
-        }
-        catch (ArgsException e)
-        {
-            _errorParameter = parameter;
-            _errorCode = ErrorCode.INVALID_INTEGER;
-            throw e;
-        }   
     }
 
     public int Cardinality() { return _argsFound.Count; }
