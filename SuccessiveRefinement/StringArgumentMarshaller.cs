@@ -1,8 +1,8 @@
-private class StringArgumentMarshaller : ArgumentMarshaller
+private class StringArgumentMarshaller : IArgumentMarshaller
 {
     private string _stringValue = "";
 
-    public override void Set(IEnumerator<string> argsIterator) 
+    public void Set(IEnumerator<string> argsIterator) 
     {
         try
         {
@@ -16,7 +16,5 @@ private class StringArgumentMarshaller : ArgumentMarshaller
         }
     }
 
-    public override void Set(string s) { }
-
-    public override object Get() { return _stringValue; }
+    public object Get() { return _stringValue; }
 }
