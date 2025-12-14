@@ -1,8 +1,8 @@
-private class IntegerArgumentMarshaller : ArgumentMarshaller
+private class IntegerArgumentMarshaller : IArgumentMarshaller
 {
     private int _integerValue = 0;
 
-    public override void Set(IEnumerator<string> argsIterator) 
+    public void Set(IEnumerator<string> argsIterator) 
     { 
         string parameter = null;        
         try
@@ -24,5 +24,5 @@ private class IntegerArgumentMarshaller : ArgumentMarshaller
         }
     }
 
-    public override object Get() { return _integerValue; }
+    public object Get() { return _integerValue; }
 }
