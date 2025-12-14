@@ -1,10 +1,8 @@
-private class BoolArgumentMarshaller : ArgumentMarshaller
+private class BoolArgumentMarshaller : IArgumentMarshaller
 {
     private bool _boolValue = false;
 
-    public override void Set(IEnumerator<string> argsIterator) { _boolValue = true; }
+    public void Set(IEnumerator<string> argsIterator) { _boolValue = true; }
 
-    public override void Set(string s) { }
-
-    public override object Get() { return _boolValue; }
+    public object Get() { return _boolValue; }
 }
