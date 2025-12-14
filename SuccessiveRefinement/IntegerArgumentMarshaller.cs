@@ -9,31 +9,19 @@ private class IntegerArgumentMarshaller : ArgumentMarshaller
         {
             argsIterator.MoveNext();            
             parameter = argsIterator.Current;
-            Set(parameter);
+            _integerValue = int.Parse(parameter);
         }
         catch (InvalidOperationException e)
         {
             _errorCode = ErrorCode.MISSING_INTEGER;
             throw new ArgsException();
         }
-        catch (ArgsException e)
+        catch (FormatException e)
         {
             _errorParameter = parameter;
             _errorCode = ErrorCode.INVALID_INTEGER;
-            throw e;
-        }
-    }
-
-    public override void Set(string s) 
-    { 
-        try
-        {
-            _integerValue = int.Parse(s);
-        }
-        catch (FormatException e)
-        {
             throw new ArgsException();
-        } 
+        }
     }
 
     public override object Get() { return _integerValue; }
