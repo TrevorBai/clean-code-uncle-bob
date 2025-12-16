@@ -19,7 +19,9 @@ public class Args
         MISSING_STRING,
         MISSING_INTEGER,
         INVALID_INTEGER,
-        UNEXPECTED_ARGUMENT
+        UNEXPECTED_ARGUMENT,
+        MISSING_DOUBLE,
+        INVALID_DOUBLE
     }
 
     public Args(string schema, string[] args)
