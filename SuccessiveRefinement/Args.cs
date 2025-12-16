@@ -180,6 +180,10 @@ public class Args
                 return string.Format("Argument {0} expects an integer but was {1}.", _errorArgumentId, _errorParameter);
             case MISSING_INTEGER:
                 return string.Format("Could not find integer parameter for {0}.", _errorArgumentId);
+            case INVALID_DOUBLE:
+                return string.Format("Argument {0} expects a double but was {1}.", _errorArgumentId, _errorParameter);
+            case MISSING_DOUBLE:
+                return string.Format("Could not find double parameter for {0}.", _errorArgumentId); 
         return string.Empty;
     }
 
