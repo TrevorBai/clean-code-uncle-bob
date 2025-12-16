@@ -66,6 +66,8 @@ public class Args
             ParseStringSchemaElement(elementId);
         else if (elementTail.Equals("#"))
             ParseIntegerSchemaElement(elementId);
+        else if (elementTail.Equals("##"))
+            ParseDoubleSchemaElement(elementId);         
         else
         {
             throw new FormatException(string.Format("Argument: {0} has invalid format: {1}.", elementId, elementTail));
@@ -94,6 +96,12 @@ public class Args
     { 
         if (!_marshallers.ContainsKey(elementId))
             _marshallers.Add(elementId, new IntegerArgumentMarshaller());
+    }
+
+    private void ParseDoubleSchemaElement(char elementId)
+    { 
+        if (!_marshallers.ContainsKey(elementId))
+            _marshallers.Add(elementId, new DoubleArgumentMarshaller());
     }
 
     private bool ParseArguments()
