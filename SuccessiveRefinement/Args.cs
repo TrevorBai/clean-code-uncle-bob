@@ -60,11 +60,11 @@ public class Args
         var elementId = element[0];
         string elementTail = element.Substring(1);
         ValidateSchemaElementId(elementId);
-        if (IsBoolSchemaElement(elementTail))
+        if (elementTail.Length == 0)
             ParseBoolSchemaElement(elementId);
-        else if (IsStringSchemaElement(elementTail))
+        else if (elementTail.Equals("*"))
             ParseStringSchemaElement(elementId);
-        else if (IsIntegerSchemaElement(elementTail))
+        else if (elementTail.Equals("#"))
             ParseIntegerSchemaElement(elementId);
         else
         {
@@ -94,21 +94,6 @@ public class Args
     { 
         if (!_marshallers.ContainsKey(elementId))
             _marshallers.Add(elementId, new IntegerArgumentMarshaller());
-    }
-
-    private bool IsBoolSchemaElement(string elementTail)
-    {
-        return elementTail.Length == 0;
-    }
-
-    private bool IsStringSchemaElement(string elementTail)
-    {
-        return elementTail.Equals("*");
-    }
-
-    private bool IsIntegerSchemaElement(string elementTail)
-    {
-        return elementTail.Equals("#");
     }
 
     private bool ParseArguments()
