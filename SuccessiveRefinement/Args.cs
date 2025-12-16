@@ -235,6 +235,19 @@ public class Args
         return b;
     }
 
+    public double GetDouble(char arg)
+    {
+        var am = _marshallers[arg];
+        try
+        {
+            return am == null ? 0 : (double)am.Get();
+        }
+        catch (Exception e)
+        {
+            return 0.0;
+        }  
+    }
+
     public bool Has(char arg) { return _argsFound.Contains(arg); }
 
     public bool IsValid() { return _valid; }
