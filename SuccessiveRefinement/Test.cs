@@ -17,3 +17,14 @@ public void TestInvalidDouble()
     AssertEquals("Argument -x expects a double but was \"Forty two\".",
                 args.ErrorMessage());   
 }
+
+public void TestMissingDouble()
+{
+    var args = new Args("x##", new string[] {"-x"});
+    AssertFalse(args.IsValid());
+    AssertEquals(0, args.Cardinality());
+    AssertFalse(args.Has('x'));
+    AssertEquals(0.0, args.GetDouble('x'), 0.01);
+    AssertEquals("Could not find double parameter for -x.", 
+                 args.ErrorMessage());
+}
