@@ -255,12 +255,5 @@ public class Args
     public bool Has(char arg) { return _argsFound.Contains(arg); }
 
     public bool IsValid() { return _valid; }
-
-    private class ArgsException : Exception
-    {
-
-
-        
-    }
     
 }
