@@ -11,7 +11,7 @@ private class StringArgumentMarshaller : IArgumentMarshaller
         }
         catch (InvalidOperationException e)
         {
-            _errorCode = ErrorCode.MISSING_STRING;
+            _errorCode = ArgsException.ErrorCode.MISSING_STRING;
             throw new ArgsException();
         }
     }
