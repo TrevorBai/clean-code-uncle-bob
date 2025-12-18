@@ -11,18 +11,7 @@ public class Args
     private ISet<char> _argsFound = new HashSet<char>();
     private char _errorArgumentId = '\0';
     private string _errorParameter = "TILT";
-    private ErrorCode _errorCode = ErrorCode.OK;
-
-    private enum ErrorCode
-    {
-        OK,
-        MISSING_STRING,
-        MISSING_INTEGER,
-        INVALID_INTEGER,
-        UNEXPECTED_ARGUMENT,
-        MISSING_DOUBLE,
-        INVALID_DOUBLE
-    }
+    private ArgsException.ErrorCode _errorCode = ArgsException.ErrorCode.OK;
 
     public Args(string schema, string[] args)
     {
@@ -71,15 +60,13 @@ public class Args
         else if (elementTail.Equals("##"))
             ParseDoubleSchemaElement(elementId);         
         else
-        {
-            throw new FormatException(string.Format("Argument: {0} has invalid format: {1}.", elementId, elementTail));
-        }      
+            throw new ArgsException(string.Format("Argument: {0} has invalid format: {1}.", elementId, elementTail));        
     }
 
     private void ValidateSchemaElementId(char elementId)
     {
         if (!char.IsLetter(elementId))
-            throw new FormatException("Bad character:" + elementId + "in Args format: " + _schema);
+            throw new ArgsException("Bad character:" + elementId + "in Args format: " + _schema);
     }
 
     private void ParseBoolSchemaElement(char elementId)
@@ -136,7 +123,7 @@ public class Args
             _argsFound.Add(argChar);
         else
             _unexpectedArguments.Add(argChar);
-            _errorCode = ErrorCode.UNEXPECTED_ARGUMENT;
+            _errorCode = ArgsException.ErrorCode.UNEXPECTED_ARGUMENT;
             _valid = false;
     }
 
