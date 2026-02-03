@@ -13,13 +13,13 @@ private class DoubleArgumentMarshaller : IArgumentMarshaller
         }
         catch (InvalidOperationException e)
         {
-            _errorCode = ErrorCode.MISSING_DOUBLE;
+            _errorCode = ArgsException.ErrorCode.MISSING_DOUBLE;
             throw new ArgsException();
         }
         catch (FormatException e)
         {
             _errorParameter = parameter;
-            _errorCode = ErrorCode.INVALID_DOUBLE;
+            _errorCode = ArgsException.ErrorCode.INVALID_DOUBLE;
             throw new ArgsException();  
         }    
     }
