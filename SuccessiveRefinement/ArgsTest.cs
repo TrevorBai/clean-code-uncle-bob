@@ -7,7 +7,7 @@ public class ArgsTest
     public void TestCreateWithNoSchemaOrArguments()
     {
         var args = new Args("", new string[0]);
-        AssertEquals(0, args.Cardinality());
+        Assert.AreEqual(0, args.Cardinality());
     }
 
     [Test]
@@ -20,8 +20,8 @@ public class ArgsTest
         }
         catch (ArgsException e)
         {
-            AssertEquals(ArgsException.ErrorCode.UNEXPECTED_ARGUMENT, e.GetErrorCode());
-            AssertEquals('x', e.GetErrorArgumentId());
+            Assert.AreEqual(ArgsException.ErrorCode.UNEXPECTED_ARGUMENT, e.GetErrorCode());
+            Assert.AreEqual('x', e.GetErrorArgumentId());
         }     
     }
 
@@ -35,8 +35,8 @@ public class ArgsTest
         }
         catch (ArgsException e)
         {
-            AssertEquals(ArgsException.ErrorCode.UNEXPECTED_ARGUMENT, e.GetErrorCode());
-            AssertEquals('x', e.GetErrorArgumentId());
+            Assert.AreEqual(ArgsException.ErrorCode.UNEXPECTED_ARGUMENT, e.GetErrorCode());
+            Assert.AreEqual('x', e.GetErrorArgumentId());
         }    
     }
 
@@ -50,8 +50,8 @@ public class ArgsTest
         }
         catch (ArgsException e)
         {
-            AssertEquals(ArgsException.ErrorCode.INVALID_ARGUMENT_NAME, e.GetErrorCode());
-            AssertEquals('x', e.GetErrorArgumentId());
+            Assert.AreEqual(ArgsException.ErrorCode.INVALID_ARGUMENT_NAME, e.GetErrorCode());
+            Assert.AreEqual('x', e.GetErrorArgumentId());
         }        
     }
 
@@ -65,8 +65,8 @@ public class ArgsTest
         }
         catch (ArgsException e)
         {
-            AssertEquals(ArgsException.ErrorCode.INVALID_FROMAT, e.GetErrorCode());
-            AssertEquals('f', e.GetErrorArgumentId());
+            Assert.AreEqual(ArgsException.ErrorCode.INVALID_FROMAT, e.GetErrorCode());
+            Assert.AreEqual('f', e.GetErrorArgumentId());
         }
     }
 
@@ -74,17 +74,17 @@ public class ArgsTest
     public void TestSimpleBoolPresent()
     {
         var args = new Args("x", new string[] { "-x" });
-        AssertEquals(1, args.Cardinality());
-        AssertEquals(true, args.GetBool('x'));
+        Assert.AreEqual(1, args.Cardinality());
+        Assert.AreEqual(true, args.GetBool('x'));
     }
 
     [Test]
     public void TestSimpleStringPresent()
     {
         var args = new Args("x*", new string[] { "-x", "param" });
-        AssertEquals(1, args.Cardinality());
+        Assert.AreEqual(1, args.Cardinality());
         AssertTrue(args.Has('x'));
-        AssertEquals("param", args.GetString('x'));
+        Assert.AreEqual("param", args.GetString('x'));
     }
 
     [Test]
@@ -97,8 +97,8 @@ public class ArgsTest
         }
         catch (ArgsException e)
         {
-            AssertEquals(ArgsException.ErrorCode.MISSING_STRING, e.GetErrorCode());
-            AssertEquals('x', e.GetErrorArgumentId());
+            Assert.AreEqual(ArgsException.ErrorCode.MISSING_STRING, e.GetErrorCode());
+            Assert.AreEqual('x', e.GetErrorArgumentId());
         }
     }
 
@@ -106,7 +106,7 @@ public class ArgsTest
     public void TestSpacesInFormat()
     {
         var args = new Args("x, y", new string[] { "-xy" });
-        AssertEquals(2, args.Cardinality());
+        Assert.AreEqual(2, args.Cardinality());
         AssertTrue(args.Has('x'));
         AssertTrue(args.Has('y'));
     }
@@ -115,9 +115,9 @@ public class ArgsTest
     public void TestSimpleIntPresent()
     {
         var args = new Args("x#", new string[] { "-x", "42" });
-        AssertEquals(1, args.Cardinality());
+        Assert.AreEqual(1, args.Cardinality());
         AssertTrue(args.Has('x'));
-        AssertEquals(42, args.GetInt('x'));
+        Assert.AreEqual(42, args.GetInt('x'));
     }
 
     [Test]
@@ -130,9 +130,9 @@ public class ArgsTest
         }
         catch (ArgsException e)
         {
-            AssertEquals(ArgsException.ErrorCode.INVALID_INTEGER, e.GetErrorCode());
-            AssertEquals('x', e.GetErrorArgumentId());
-            AssertEquals("Forty two", e.GetErrorParameter());      
+            Assert.AreEqual(ArgsException.ErrorCode.INVALID_INTEGER, e.GetErrorCode());
+            Assert.AreEqual('x', e.GetErrorArgumentId());
+            Assert.AreEqual("Forty two", e.GetErrorParameter());
         }     
     }
 
@@ -146,8 +146,8 @@ public class ArgsTest
         }
         catch (ArgsException e)
         {
-            AssertEquals(ArgsException.ErrorCode.MISSING_INTEGER, e.GetErrorCode());
-            AssertEquals('x', e.GetErrorArgumentId());        
+            Assert.AreEqual(ArgsException.ErrorCode.MISSING_INTEGER, e.GetErrorCode());
+            Assert.AreEqual('x', e.GetErrorArgumentId());        
         } 
     }
 
@@ -156,9 +156,9 @@ public class ArgsTest
     {
         var args = new Args("x##", new string[] {"-x" , "42.3"});
         AssertTrue(args.IsValid());
-        AssertEquals(1, args.Cardinality());
+        Assert.AreEqual(1, args.Cardinality());
         AssertTrue(args.Has('x'));
-        AssertEquals(42.3, args.GetDouble('x'), .001);
+        Assert.AreEqual(42.3, args.GetDouble('x'), .001);
     }
 
     [Test]
@@ -171,9 +171,9 @@ public class ArgsTest
         } 
         catch (ArgsException e)
         {
-            AssertEquals(ArgsException.ErrorCode.INVALID_DOUBLE, e.GetErrorCode());
-            AssertEquals('x', e.GetErrorArgumentId());
-            AssertEquals("Forty two", e.GetErrorParameter());  
+            Assert.AreEqual(ArgsException.ErrorCode.INVALID_DOUBLE, e.GetErrorCode());
+            Assert.AreEqual('x', e.GetErrorArgumentId());
+            Assert.AreEqual("Forty two", e.GetErrorParameter());  
             
         }
     }
@@ -188,8 +188,8 @@ public class ArgsTest
         }
         catch (ArgsException e)
         {
-            AssertEquals(ArgsException.ErrorCode.MISSING_DOUBLE, e.GetErrorCode());
-            AssertEquals('x', e.GetErrorArgumentId());        
+            Assert.AreEqual(ArgsException.ErrorCode.MISSING_DOUBLE, e.GetErrorCode());
+            Assert.AreEqual('x', e.GetErrorArgumentId());        
         }
     }
   
