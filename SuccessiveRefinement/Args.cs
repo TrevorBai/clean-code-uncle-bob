@@ -5,32 +5,21 @@ public class Args
     private string _schema;
     private List<string> _argsList;
     private IEnumerator<string> _argsIterator;  // shared cursor
-    private bool _valid = true;
     private ISet<char> _unexpectedArguments = new SortedSet<char>();
     private IDictionary<char, ArgumentMarshaller> _marshallers = new Dictionary<char, ArgumentMarshaller>();
     private ISet<char> _argsFound = new HashSet<char>();
-    private char _errorArgumentId = '\0';
-    private string _errorParameter = "TILT";
-    private ArgsException.ErrorCode _errorCode = ArgsException.ErrorCode.OK;
 
     public Args(string schema, string[] args)
     {
         _schema = schema;
         _argsList = args.ToList();
-        _valid = Parse();
+        Parse();
     }
 
-    private bool Parse()
+    private void Parse()
     {
-        if (_schema.Length == 0 && _argsList.Count == 0) return true;
         ParseSchema();
-        try 
-        {
-            ParseArguments();
-        }
-        catch (ArgsException e)
-        {}
-        return _valid;
+        ParseArguments();
     }
 
     private bool ParseSchema()
@@ -60,13 +49,13 @@ public class Args
         else if (elementTail.Equals("##"))
             ParseDoubleSchemaElement(elementId);         
         else
-            throw new ArgsException(string.Format("Argument: {0} has invalid format: {1}.", elementId, elementTail));        
+            throw new ArgsException(ArgsException.ErrorCode.INVALID_FORMAT, elementId, elementTail));        
     }
 
     private void ValidateSchemaElementId(char elementId)
     {
         if (!char.IsLetter(elementId))
-            throw new ArgsException("Bad character:" + elementId + "in Args format: " + _schema);
+            throw new ArgsException(ArgsException.ErrorCode.INVALID_ARGUMENT_NAME, elementId, null);
     }
 
     private void ParseBoolSchemaElement(char elementId)
@@ -93,7 +82,7 @@ public class Args
             _marshallers.Add(elementId, new DoubleArgumentMarshaller());
     }
 
-    private bool ParseArguments()
+    private void ParseArguments()
     {
         _argsIterator = _argsList.GetEnumerator();
         while (_argsIterator.MoveNext())
@@ -101,7 +90,6 @@ public class Args
             string arg = _argsIterator.Current;
             ParseArgument(arg);
         }
-        return true;
     }
 
     private void ParseArgument(string arg)
@@ -122,9 +110,7 @@ public class Args
         if (SetArgument(argChar))
             _argsFound.Add(argChar);
         else
-            _unexpectedArguments.Add(argChar);
-            _errorCode = ArgsException.ErrorCode.UNEXPECTED_ARGUMENT;
-            _valid = false;
+            throw new ArgsException(ArgsException.ErrorCode.UNEXPECTED_ARGUMENT, argChar, null);
     }
 
     private bool SetArgument(char argChar)
@@ -138,9 +124,8 @@ public class Args
         }
         catch (ArgsException e)
         {
-            _valid = false;
-            _errorArgumentId = argChar;
-            return false;
+            e.SetErrorArgumentId(argChar);
+            throw e;
         }
     }
 
@@ -152,37 +137,6 @@ public class Args
             return "-[" + _schema + "]";
         else
             return string.Empty;        
-    }
-
-    public string ErrorMessage()
-    {
-        switch (_errorCode)
-            case OK:
-                throw new Exception("TILT: Should not get here.");
-            case UNEXPECTED_ARGUMENT:
-                return UnexpectedArgumetnMessage();
-            case MISSING_STRING:
-                return string.Format("Could not find string parameter for {0}.", _errorArgumentId);
-            case INVALID_INTEGER:
-                return string.Format("Argument {0} expects an integer but was {1}.", _errorArgumentId, _errorParameter);
-            case MISSING_INTEGER:
-                return string.Format("Could not find integer parameter for {0}.", _errorArgumentId);
-            case INVALID_DOUBLE:
-                return string.Format("Argument {0} expects a double but was {1}.", _errorArgumentId, _errorParameter);
-            case MISSING_DOUBLE:
-                return string.Format("Could not find double parameter for {0}.", _errorArgumentId); 
-        return string.Empty;
-    }
-
-    private string UnexpectedArgumentMessage()
-    {
-        var message = new StringBuilder("Argument (s) -");
-        foreach (var c in _unexpectedArguments)
-        {
-            message.Append(c);
-        }
-        message.Append(" unexpected.");
-        return message.ToString();
     }
 
     public string GetString(char arg) 
@@ -240,7 +194,4 @@ public class Args
     }
 
     public bool Has(char arg) { return _argsFound.Contains(arg); }
-
-    public bool IsValid() { return _valid; }
-    
 }
