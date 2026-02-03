@@ -55,12 +55,101 @@ public class ArgsTest
         }        
     }
 
+    [Test]
+    public void TestInvalidArgumentFormat()
+    {
+        try
+        {
+            new Args("f~", new string[] {});
+            Assert.Fail("Args constructor shoudl have thrown exception");
+        }
+        catch (ArgsException e)
+        {
+            AssertEquals(ArgsException.ErrorCode.INVALID_FROMAT, e.GetErrorCode());
+            AssertEquals('f', e.GetErrorArgumentId());
+        }
+    }
 
+    [Test]
+    public void TestSimpleBoolPresent()
+    {
+        var args = new Args("x", new string[] { "-x" });
+        AssertEquals(1, args.Cardinality());
+        AssertEquals(true, args.GetBool('x'));
+    }
 
+    [Test]
+    public void TestSimpleStringPresent()
+    {
+        var args = new Args("x*", new string[] { "-x", "param" });
+        AssertEquals(1, args.Cardinality());
+        AssertTrue(args.Has('x'));
+        AssertEquals("param", args.GetString('x'));
+    }
 
+    [Test]
+    public void TestMissingStringArgument()
+    {
+        try
+        {
+            new Args("x*", new string[] { "-x" });
+            Assert.Fail();
+        }
+        catch (ArgsException e)
+        {
+            AssertEquals(ArgsException.ErrorCode.MISSING_STRING, e.GetErrorCode());
+            AssertEquals('x', e.GetErrorArgumentId());
+        }
+    }
 
+    [Test]
+    public void TestSpacesInFormat()
+    {
+        var args = new Args("x, y", new string[] { "-xy" });
+        AssertEquals(2, args.Cardinality());
+        AssertTrue(args.Has('x'));
+        AssertTrue(args.Has('y'));
+    }
 
-    
+    [Test]
+    public void TestSimpleIntPresent()
+    {
+        var args = new Args("x#", new string[] { "-x", "42" });
+        AssertEquals(1, args.Cardinality());
+        AssertTrue(args.Has('x'));
+        AssertEquals(42, args.GetInt('x'));
+    }
+
+    [Test]
+    public void TestInvalidInteger()
+    {
+        try
+        {
+            new Args("x#", new string[] { "-x", "Forty two" });
+            Assert.Fail();
+        }
+        catch (ArgsException e)
+        {
+            AssertEquals(ArgsException.ErrorCode.INVALID_INTEGER, e.GetErrorCode());
+            AssertEquals('x', e.GetErrorArgumentId());
+            AssertEquals("Forty two", e.GetErrorParameter());      
+        }     
+    }
+
+    [Test]
+    public void TestMissingInteger()
+    {
+        try
+        {
+            new Args("x#", new string[] { "-x" });
+            Assert.Fail();
+        }
+        catch (ArgsException e)
+        {
+            AssertEquals(ArgsException.ErrorCode.MISSING_INTEGER, e.GetErrorCode());
+            AssertEquals('x', e.GetErrorArgumentId());        
+        } 
+    }
 
     [Test]
     public void TestSimpleDoublePresent()
@@ -75,24 +164,33 @@ public class ArgsTest
     [Test]
     public void TestInvalidDouble()
     {
-        var args = new Args("x##", new string[] {"-x", "Forty two"});
-        AssertFalse(args.IsValid());
-        AssertEquals(0, args.Cardinality());
-        AssertFalse(args.Has('x'));
-        AssertEquals(0, args.GetInt('x'));
-        AssertEquals("Argument -x expects a double but was \"Forty two\".", args.ErrorMessage());   
+        try
+        {
+            new Args("x##", new string[] {"-x", "Forty two"});
+            Assert.Fail();
+        } 
+        catch (ArgsException e)
+        {
+            AssertEquals(ArgsException.ErrorCode.INVALID_DOUBLE, e.GetErrorCode());
+            AssertEquals('x', e.GetErrorArgumentId());
+            AssertEquals("Forty two", e.GetErrorParameter());  
+            
+        }
     }
 
     [Test]
     public void TestMissingDouble()
     {
-        var args = new Args("x##", new string[] {"-x"});
-        AssertFalse(args.IsValid());
-        AssertEquals(0, args.Cardinality());
-        AssertFalse(args.Has('x'));
-        AssertEquals(0.0, args.GetDouble('x'), 0.01);
-        AssertEquals("Could not find double parameter for -x.", args.ErrorMessage());
+        try
+        {
+            new Args("x##", new string[] {"-x"});
+            Assert.Fail();
+        }
+        catch (ArgsException e)
+        {
+            AssertEquals(ArgsException.ErrorCode.MISSING_DOUBLE, e.GetErrorCode());
+            AssertEquals('x', e.GetErrorArgumentId());        
+        }
     }
-
-    
+  
 }
