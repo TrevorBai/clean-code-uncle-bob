@@ -5,7 +5,6 @@ public class Args
     private string _schema;
     private List<string> _argsList;
     private IEnumerator<string> _argsIterator;  // shared cursor
-    private ISet<char> _unexpectedArguments = new SortedSet<char>();
     private IDictionary<char, ArgumentMarshaller> _marshallers = new Dictionary<char, ArgumentMarshaller>();
     private ISet<char> _argsFound = new HashSet<char>();
 
