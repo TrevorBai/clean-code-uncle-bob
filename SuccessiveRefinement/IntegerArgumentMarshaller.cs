@@ -13,13 +13,13 @@ private class IntegerArgumentMarshaller : IArgumentMarshaller
         }
         catch (InvalidOperationException e)
         {
-            _errorCode = ErrorCode.MISSING_INTEGER;
+            _errorCode = ArgsException.ErrorCode.MISSING_INTEGER;
             throw new ArgsException();
         }
         catch (FormatException e)
         {
             _errorParameter = parameter;
-            _errorCode = ErrorCode.INVALID_INTEGER;
+            _errorCode = ArgsException.ErrorCode.INVALID_INTEGER;
             throw new ArgsException();
         }
     }
