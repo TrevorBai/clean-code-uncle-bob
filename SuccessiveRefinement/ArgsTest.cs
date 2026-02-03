@@ -83,7 +83,7 @@ public class ArgsTest
     {
         var args = new Args("x*", new string[] { "-x", "param" });
         Assert.AreEqual(1, args.Cardinality());
-        AssertTrue(args.Has('x'));
+        Assert.IsTrue(args.Has('x'));
         Assert.AreEqual("param", args.GetString('x'));
     }
 
@@ -107,8 +107,8 @@ public class ArgsTest
     {
         var args = new Args("x, y", new string[] { "-xy" });
         Assert.AreEqual(2, args.Cardinality());
-        AssertTrue(args.Has('x'));
-        AssertTrue(args.Has('y'));
+        Assert.IsTrue(args.Has('x'));
+        Assert.IsTrue(args.Has('y'));
     }
 
     [Test]
@@ -116,7 +116,7 @@ public class ArgsTest
     {
         var args = new Args("x#", new string[] { "-x", "42" });
         Assert.AreEqual(1, args.Cardinality());
-        AssertTrue(args.Has('x'));
+        Assert.IsTrue(args.Has('x'));
         Assert.AreEqual(42, args.GetInt('x'));
     }
 
@@ -155,9 +155,9 @@ public class ArgsTest
     public void TestSimpleDoublePresent()
     {
         var args = new Args("x##", new string[] {"-x" , "42.3"});
-        AssertTrue(args.IsValid());
+        Assert.IsTrue(args.IsValid());
         Assert.AreEqual(1, args.Cardinality());
-        AssertTrue(args.Has('x'));
+        Assert.IsTrue(args.Has('x'));
         Assert.AreEqual(42.3, args.GetDouble('x'), .001);
     }
 
