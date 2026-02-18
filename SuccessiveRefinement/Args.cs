@@ -2,36 +2,29 @@ using System.Collections.Generic;
 
 public class Args
 {
-    private string _schema;
     private List<string> _argsList;
+
+    
+    private IDictionary<char, ArgumentMarshaller> _marshallers;
+    private ISet<char> _argsFound;
     private IEnumerator<string> _argsIterator;  // shared cursor
-    private IDictionary<char, ArgumentMarshaller> _marshallers = new Dictionary<char, ArgumentMarshaller>();
-    private ISet<char> _argsFound = new HashSet<char>();
 
     public Args(string schema, string[] args)
     {
-        _schema = schema;
+        _marshallers = = new Dictionary<char, ArgumentMarshaller>();
+        _argsFound = new HashSet<char>();
+        
         _argsList = args.ToList();
-        Parse();
-    }
 
-    private void Parse()
-    {
-        ParseSchema();
+        ParseSchema(schema);
         ParseArguments();
     }
 
-    private bool ParseSchema()
+    private void ParseSchema(string schema)
     {
-        foreach (var element in _schema.Split(','))
-        {
+        foreach (var element in schema.Split(','))
             if (element.Length > 0)
-            {
-                string trimmedElement = element.Trim();
-                ParseSchemaElement(trimmedElement);
-            }        
-        }
-        return true;
+                ParseSchemaElement(element.Trim());    
     }
 
     private void ParseSchemaElement(stirng element)
@@ -126,16 +119,6 @@ public class Args
             e.SetErrorArgumentId(argChar);
             throw e;
         }
-    }
-
-    public int Cardinality() { return _argsFound.Count; }
-
-    public string Usage()
-    {
-        if (_schema.Length > 0)
-            return "-[" + _schema + "]";
-        else
-            return string.Empty;        
     }
 
     public string GetString(char arg) 
