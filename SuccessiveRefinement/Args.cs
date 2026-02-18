@@ -2,22 +2,17 @@ using System.Collections.Generic;
 
 public class Args
 {
-    private List<string> _argsList;
-
-    
     private IDictionary<char, ArgumentMarshaller> _marshallers;
     private ISet<char> _argsFound;
-    private IEnumerator<string> _argsIterator;  // shared cursor
+    private IEnumerator<string> _argsIterator; // shared cursor
 
     public Args(string schema, string[] args)
     {
         _marshallers = = new Dictionary<char, ArgumentMarshaller>();
         _argsFound = new HashSet<char>();
         
-        _argsList = args.ToList();
-
         ParseSchema(schema);
-        ParseArguments();
+        ParseArgumentStrings(args.ToList());
     }
 
     private void ParseSchema(string schema)
@@ -74,30 +69,31 @@ public class Args
             _marshallers.Add(elementId, new DoubleArgumentMarshaller());
     }
 
-    private void ParseArguments()
+    private void ParseArgumentStrings(List<string> argsList)
     {
         _argsIterator = _argsList.GetEnumerator();
         while (_argsIterator.MoveNext())
         {
             string arg = _argsIterator.Current;
-            ParseArgument(arg);
+            if (arg.StartsWith("-")) 
+            {
+                ParseArgumentCharacters(arg.Substring(1));
+            } else
+            {
+                break;
+            }
         }
     }
 
-    private void ParseArgument(string arg)
+    private void ParseArgumentCharacters(string arg)
     {
-        if (arg.StartsWith("-")) ParseElements(arg);
-    }
-
-    private void ParseElements(string arg)
-    {
-        for (var i = 1; i < arg.Length; i++)
+        for (var i = 0; i < arg.Length; i++)
         {
-            ParseElement(arg[i]);
+            ParseArgumentCharacter(arg[i]);
         }
     }
 
-    private void ParseElement(char argChar)
+    private void ParseArgumentCharacter(char argChar)
     {
         if (SetArgument(argChar))
             _argsFound.Add(argChar);
