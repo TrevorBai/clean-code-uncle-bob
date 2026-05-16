@@ -4,7 +4,7 @@ private class BoolArgumentMarshaller : IArgumentMarshaller
 
     public void Set(IEnumerator<string> argsIterator) { _boolValue = true; }
 
-    public static object GetValue(IArgumentMarshaller am) 
+    public static bool GetValue(IArgumentMarshaller am) 
     {
         if (am != null && am is BoolArgumentMarshaller)
             return ((BoolArgumentMarshaller)am)._boolValue;
