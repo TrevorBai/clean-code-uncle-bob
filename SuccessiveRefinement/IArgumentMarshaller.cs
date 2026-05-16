@@ -1,4 +1,4 @@
-private interface IArgumentMarshaller
+public interface IArgumentMarshaller
 {
     void Set(IEnumerator<string> argsIterator);
 }
