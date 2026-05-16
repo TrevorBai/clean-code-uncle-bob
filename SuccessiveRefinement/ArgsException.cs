@@ -1,8 +1,8 @@
     public class ArgsException : Exception
     {
         private char _errorArgumentId = '\0';
-        private string _errorParameter = "TILT";
-        private ErrorCode _errorCode = ErrorCode.OK;
+        private string _errorParameter = null;
+        private ErrorCode _errorCode = OK;
 
         public ArgsException() { }
 
@@ -43,7 +43,7 @@
             switch (_errorCode)
             {
                 case OK:
-                    throw new Exception("TILT: Should not get here.");
+                    return "TILT: Should not get here.";
                 case UNEXPECTED_ARGUMENT:
                     return string.Format("Argument {0} unexpected.", _errorArgumentId);
                 case MISSING_STRING:
@@ -56,6 +56,10 @@
                     return string.Format("Argument {0} expects a double but was {1}.", _errorArgumentId, _errorParameter);
                 case MISSING_DOUBLE:
                     return string.Format("Could not find double parameter for {0}.", _errorArgumentId);
+                case INVALID_ARGUMENT_NAME:
+                    return string.Format("{0} is not a valid argument name.", _errorArgumentId);
+                case INVALID_ARGUMENT_FORMAT:
+                    return string.Format("{0} is not a valid argument format.", _errorParameter);
             }
             return string.Empty;
         }
@@ -63,7 +67,7 @@
         public enum ErrorCode
         {
             OK,
-            INVALID_FORMAT,
+            INVALID_ARGUMENT_FORMAT,
             UNEXPECTED_ARGUMENT,
             INVALID_ARGUMENT_NAME,
             MISSING_STRING,
