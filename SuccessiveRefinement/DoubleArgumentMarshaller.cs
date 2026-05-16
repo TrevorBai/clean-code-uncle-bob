@@ -1,6 +1,6 @@
 using ArgsException.ErrorCode;
 
-private class DoubleArgumentMarshaller : IArgumentMarshaller
+public class DoubleArgumentMarshaller : IArgumentMarshaller
 {
     private double _doubleValue = 0;
 
