@@ -4,5 +4,11 @@ private class BoolArgumentMarshaller : IArgumentMarshaller
 
     public void Set(IEnumerator<string> argsIterator) { _boolValue = true; }
 
-    public object Get() { return _boolValue; }
+    public static object GetValue(IArgumentMarshaller am) 
+    {
+        if (am != null && am is BoolArgumentMarshaller)
+            return ((BoolArgumentMarshaller)am)._boolValue;
+        else
+            return false;
+    }
 }
