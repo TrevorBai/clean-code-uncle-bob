@@ -34,7 +34,9 @@ public class Args
         else if (elementTail.Equals("#"))
             ParseIntegerSchemaElement(elementId);
         else if (elementTail.Equals("##"))
-            ParseDoubleSchemaElement(elementId);         
+            ParseDoubleSchemaElement(elementId);
+        else if (elementTail.Equals("[*]"))
+            ParseStringArraySchemaElement(elementId);
         else
             throw new ArgsException(ArgsException.ErrorCode.INVALID_FORMAT, elementId, elementTail));        
     }
@@ -67,6 +69,12 @@ public class Args
     { 
         if (!_marshallers.ContainsKey(elementId))
             _marshallers.Add(elementId, new DoubleArgumentMarshaller());
+    }
+
+    private void ParseStringArraySchemaElement(char elementId) 
+    {
+        if (!_marshallers.ContainsKey(elementId))
+            _marshallers.Add(elementId, new StringArrayArgumentMarshaller());
     }
 
     private void ParseArgumentStrings(List<string> argsList)
