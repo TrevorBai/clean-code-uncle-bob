@@ -1,4 +1,4 @@
-private class BoolArgumentMarshaller : IArgumentMarshaller
+public class BoolArgumentMarshaller : IArgumentMarshaller
 {
     private bool _boolValue = false;
 
