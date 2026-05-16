@@ -8,7 +8,6 @@ private class BoolArgumentMarshaller : IArgumentMarshaller
     {
         if (am != null && am is BoolArgumentMarshaller)
             return ((BoolArgumentMarshaller)am)._boolValue;
-        else
-            return false;
+        return false;
     }
 }
