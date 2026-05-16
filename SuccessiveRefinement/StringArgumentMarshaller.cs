@@ -1,6 +1,6 @@
 using ArgsException.ErrorCode;
 
-private class StringArgumentMarshaller : IArgumentMarshaller
+public class StringArgumentMarshaller : IArgumentMarshaller
 {
     private string _stringValue = "";
 
