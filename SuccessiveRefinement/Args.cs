@@ -123,56 +123,27 @@ public class Args
 
     public string GetString(char arg) 
     { 
-        var am = _marshallers[arg];
-        try
-        {
-            return am == null ? string.Empty : (string)am.Get();
-        }
-        catch (InvalidCastException e)
-        {
-            return string.Empty;
-        }
+        return StringArgumentMarshaller.GetValue(_marshallers[arg]);
     }
 
     public int GetInt(char arg) 
-    { 
-        var am = _marshallers[arg];
-        try
-        {
-            return am == null ? 0 : (int)am.Get(); 
-        }
-        catch (Exception e)
-        {
-            return 0;
-        }      
+    {
+        return IntegerArgumentMarshaller.GetValue(_marshallers[arg]);    
     }
 
     public bool GetBool(char arg) 
     {
-        var am = _marshallers[arg];
-        var b = false;
-        try
-        {
-            b = am != null && (bool)am.Get()
-        }
-        catch (InvalidCastException e)
-        {
-            b = false;
-        }  
-        return b;
+        return BoolArgumentMarshaller.GetValue(_marshallers[arg]);
     }
 
     public double GetDouble(char arg)
     {
-        var am = _marshallers[arg];
-        try
-        {
-            return am == null ? 0 : (double)am.Get();
-        }
-        catch (Exception e)
-        {
-            return 0.0;
-        }  
+        return DoubleArgumentMarshaller.GetValue(_marshallers[arg]);
+    }
+
+    public string[] GetStringArray(char arg)
+    {
+        return StringArrayArgumentMarshaller.GetValue(_marshallers[arg]);
     }
 
     public bool Has(char arg) { return _argsFound.Contains(arg); }
