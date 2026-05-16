@@ -1,3 +1,5 @@
+using ArgsException.ErrorCode;
+
 private class DoubleArgumentMarshaller : IArgumentMarshaller
 {
     private double _doubleValue = 0;
@@ -13,16 +15,18 @@ private class DoubleArgumentMarshaller : IArgumentMarshaller
         }
         catch (InvalidOperationException e)
         {
-            _errorCode = ArgsException.ErrorCode.MISSING_DOUBLE;
-            throw new ArgsException();
+            throw new ArgsException(MISSING_DOUBLE);
         }
         catch (FormatException e)
         {
-            _errorParameter = parameter;
-            _errorCode = ArgsException.ErrorCode.INVALID_DOUBLE;
-            throw new ArgsException();  
+            throw new ArgsException(INVALID_DOUBLE, parameter);
         }    
     }
 
-    public object Get() { return _doubleValue; }
+    public static double GetValue(IArgumentMarshaller am) 
+    {
+        if (am != null && am is DoubleArgumentMarshaller)
+            return ((DoubleArgumentMarshaller)am)._doubleValue;
+        return 0;
+    }
 }
