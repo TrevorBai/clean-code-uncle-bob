@@ -1,3 +1,5 @@
+using ArgsException.ErrorCode;
+
 private class IntegerArgumentMarshaller : IArgumentMarshaller
 {
     private int _integerValue = 0;
@@ -13,16 +15,18 @@ private class IntegerArgumentMarshaller : IArgumentMarshaller
         }
         catch (InvalidOperationException e)
         {
-            _errorCode = ArgsException.ErrorCode.MISSING_INTEGER;
-            throw new ArgsException();
+            throw new ArgsException(MISSING_INTEGER);
         }
         catch (FormatException e)
         {
-            _errorParameter = parameter;
-            _errorCode = ArgsException.ErrorCode.INVALID_INTEGER;
-            throw new ArgsException();
+            throw new ArgsException(INVALID_INTEGER, parameter);
         }
     }
 
-    public object Get() { return _integerValue; }
+    public static int GetValue(IArgumentMarshaller am)
+    {
+        if (am != null && am is IntegerArgumentMarshaller)
+            return ((IntegerArgumentMarshaller)am)._integerValue;
+        return 0;
+    }
 }
