@@ -1,6 +1,6 @@
 using ArgsException.ErrorCode;
 
-private class IntegerArgumentMarshaller : IArgumentMarshaller
+public class IntegerArgumentMarshaller : IArgumentMarshaller
 {
     private int _integerValue = 0;
 
