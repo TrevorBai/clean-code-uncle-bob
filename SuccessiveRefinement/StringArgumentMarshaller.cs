@@ -1,3 +1,5 @@
+using ArgsException.ErrorCode;
+
 private class StringArgumentMarshaller : IArgumentMarshaller
 {
     private string _stringValue = "";
@@ -11,10 +13,14 @@ private class StringArgumentMarshaller : IArgumentMarshaller
         }
         catch (InvalidOperationException e)
         {
-            _errorCode = ArgsException.ErrorCode.MISSING_STRING;
-            throw new ArgsException();
+            throw new ArgsException(MISSING_STRING);
         }
     }
 
-    public object Get() { return _stringValue; }
+    public static string GetValue(IArgumentMarshaller am)
+    {
+        if (am != null && am is StringArgumentMarshaller)
+            return ((StringArgumentMarshaller)am)._stringValue;
+        return string.Empty;
+    }
 }
