@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using ArgsException.ErrorCode;
 
 public class Args
 {
@@ -38,13 +39,13 @@ public class Args
         else if (elementTail.Equals("[*]"))
             ParseStringArraySchemaElement(elementId);
         else
-            throw new ArgsException(ArgsException.ErrorCode.INVALID_FORMAT, elementId, elementTail));        
+            throw new ArgsException(INVALID_FORMAT, elementId, elementTail));        
     }
 
     private void ValidateSchemaElementId(char elementId)
     {
         if (!char.IsLetter(elementId))
-            throw new ArgsException(ArgsException.ErrorCode.INVALID_ARGUMENT_NAME, elementId, null);
+            throw new ArgsException(INVALID_ARGUMENT_NAME, elementId, null);
     }
 
     private void ParseBoolSchemaElement(char elementId)
@@ -105,7 +106,7 @@ public class Args
     {
         var m = _marshallers[argChar];
         if (m == null)
-            throw new ArgsException(ArgsException.ErrorCode.UNEXPECTED_ARGUMENT, argChar, null);
+            throw new ArgsException(UNEXPECTED_ARGUMENT, argChar, null);
         else
         {
             _argsFound.Add(argChar);
