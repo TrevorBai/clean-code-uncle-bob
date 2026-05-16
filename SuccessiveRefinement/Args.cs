@@ -103,25 +103,21 @@ public class Args
 
     private void ParseArgumentCharacter(char argChar)
     {
-        if (SetArgument(argChar))
-            _argsFound.Add(argChar);
-        else
-            throw new ArgsException(ArgsException.ErrorCode.UNEXPECTED_ARGUMENT, argChar, null);
-    }
-
-    private bool SetArgument(char argChar)
-    {
         var m = _marshallers[argChar];
-        if (m == null) return false;
-        try
+        if (m == null)
+            throw new ArgsException(ArgsException.ErrorCode.UNEXPECTED_ARGUMENT, argChar, null);
+        else
         {
-            m.Set(_argsIterator);
-            return true;
-        }
-        catch (ArgsException e)
-        {
-            e.SetErrorArgumentId(argChar);
-            throw e;
+            _argsFound.Add(argChar);
+            try
+            {
+                m.Set(_argsIterator);
+            }
+            catch (ArgsException e)
+            {
+                e.SetErrorArgumentId(argChar);
+                throw e;
+            }       
         }
     }
 
