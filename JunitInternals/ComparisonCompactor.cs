@@ -19,7 +19,7 @@ public class ComparisonCompactor
 
     public string Compact(string message)
     {
-        if (_expected == null || _actual == null || AreStringsEqual())
+        if (ShouldNotCompact())
             return Assert.Format(message, _expected, _actual);
 
         FindCommonPrefix();
@@ -27,6 +27,11 @@ public class ComparisonCompactor
         string expected = CompactString(_expected);
         string actual = CompactString(_actual);
         return Assert.Format(message, expected, actual);
+    }
+
+    private bool ShouldNotCompact()
+    {
+        return _expected == null || _actual == null || AreStringsEqual();     
     }
 
     private string CompactString(string source)
