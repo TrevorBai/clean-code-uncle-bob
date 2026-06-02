@@ -17,7 +17,7 @@ public class ComparisonCompactor
         _actual = actual;
     }
 
-    public string Compact(string message)
+    public string FormatCompactedComparison(string message)
     {
         if (CanBeCompacted())
         {
