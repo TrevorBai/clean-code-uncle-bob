@@ -38,7 +38,7 @@ public class ComparisonCompactor
     private string CompactString(string source)
     {
         string result = DELTA_START + source.Substring(_prefix, source.Length - _suffix + 1) + DELTA_END;
-        if (_prefix > 0) result = ComputCommonPrefix() + result;
+        if (_prefix > 0) result = ComputeCommonPrefix() + result;
         if (_suffix > 0) result = result + ComputeCommonSuffix();
         return result;
     }
