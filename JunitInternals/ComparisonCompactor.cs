@@ -19,19 +19,20 @@ public class ComparisonCompactor
 
     public string Compact(string message)
     {
-        if (ShouldNotCompact())
-            return Assert.Format(message, _expected, _actual);
-
-        FindCommonPrefix();
-        FindCommonSuffix();
-        string compactExpected = CompactString(_expected);
-        string compactActual = CompactString(_actual);
-        return Assert.Format(message, compactExpected, compactActual);
+        if (CanBeCompacted())
+        {
+            FindCommonPrefix();
+            FindCommonSuffix();
+            string compactExpected = CompactString(_expected);
+            string compactActual = CompactString(_actual);
+            return Assert.Format(message, compactExpected, compactActual);          
+        }
+        return Assert.Format(message, _expected, _actual);
     }
 
-    private bool ShouldNotCompact()
+    private bool CanBeCompacted()
     {
-        return _expected == null || _actual == null || AreStringsEqual();     
+        return _expected != null && _actual != null && !AreStringsEqual();
     }
 
     private string CompactString(string source)
