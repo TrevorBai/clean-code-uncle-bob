@@ -23,10 +23,7 @@ public class ComparisonCompactor
     {
         if (CanBeCompacted())
         {
-            FindCommonPrefix();
-            FindCommonSuffix();
-            _compactExpected = CompactString(_expected);
-            _compactActual = CompactString(_actual);
+            CompactExpectedAndActual();
             return Assert.Format(message, _compactExpected, _compactActual);
         }
         return Assert.Format(message, _expected, _actual);
@@ -35,6 +32,14 @@ public class ComparisonCompactor
     private bool CanBeCompacted()
     {
         return _expected != null && _actual != null && !AreStringsEqual();
+    }
+
+    private void CompactExpectedAndActual()
+    {
+        FindCommonPrefix();
+        FindCommonSuffix();
+        _compactExpected = CompactString(_expected);
+        _compactActual = CompactString(_actual);        
     }
 
     private string CompactString(string source)
