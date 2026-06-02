@@ -7,6 +7,8 @@ public class ComparisonCompactor
     private int _contextLength;
     private string _expected;
     private string _actual;
+    private string _compactExpected;
+    private string _compactActual; 
     private int _prefix;
     private int _suffix;
 
@@ -23,9 +25,9 @@ public class ComparisonCompactor
         {
             FindCommonPrefix();
             FindCommonSuffix();
-            string compactExpected = CompactString(_expected);
-            string compactActual = CompactString(_actual);
-            return Assert.Format(message, compactExpected, compactActual);          
+            _compactExpected = CompactString(_expected);
+            _compactActual = CompactString(_actual);
+            return Assert.Format(message, _compactExpected, _compactActual);
         }
         return Assert.Format(message, _expected, _actual);
     }
