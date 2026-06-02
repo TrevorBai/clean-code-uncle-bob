@@ -24,9 +24,9 @@ public class ComparisonCompactor
 
         FindCommonPrefix();
         FindCommonSuffix();
-        string expected = CompactString(_expected);
-        string actual = CompactString(_actual);
-        return Assert.Format(message, expected, actual);
+        string compactExpected = CompactString(_expected);
+        string compactActual = CompactString(_actual);
+        return Assert.Format(message, compactExpected, compactActual);
     }
 
     private bool ShouldNotCompact()
