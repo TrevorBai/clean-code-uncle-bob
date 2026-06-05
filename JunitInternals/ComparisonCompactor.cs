@@ -9,8 +9,8 @@ public class ComparisonCompactor
     private string _actual;
     private string _compactExpected;
     private string _compactActual; 
-    private int _prefix;
-    private int _suffix;
+    private int _prefixIndex;
+    private int _suffixIndex;
 
     public ComparisonCompactor(int contextLength, string expected, string actual)
     {
@@ -44,19 +44,19 @@ public class ComparisonCompactor
 
     private string CompactString(string source)
     {
-        string result = DELTA_START + source.Substring(_prefix, source.Length - _suffix + 1) + DELTA_END;
-        if (_prefix > 0) result = ComputeCommonPrefix() + result;
-        if (_suffix > 0) result = result + ComputeCommonSuffix();
+        string result = DELTA_START + source.Substring(_prefixIndex, source.Length - _suffixIndex + 1) + DELTA_END;
+        if (_prefixIndex > 0) result = ComputeCommonPrefix() + result;
+        if (_suffixIndex > 0) result = result + ComputeCommonSuffix();
         return result;
     }
 
     private void FindCommonPrefix()
     {
-        _prefix = 0;
+        _prefixIndex = 0;
         int end = Math.Min(_expected.Length, _actual.Length);
-        for (; _prefix < end; _prefix++)
+        for (; _prefixIndex < end; _prefixIndex++)
         {
-            if (_expected[_prefix] != _actual[_prefix]) break;
+            if (_expected[_prefixIndex] != _actual[_prefixIndex]) break;
         }   
     }
 
@@ -64,23 +64,23 @@ public class ComparisonCompactor
     {
         int expectedSuffix = _expected.Length - 1;
         int actualSuffix = _actual.Length - 1;
-        for (; actualSuffix >= _prefix && expectedSuffix >= _prefix; actualSuffix--, expectedSuffix--)
+        for (; actualSuffix >= _prefixIndex && expectedSuffix >= _prefixIndex; actualSuffix--, expectedSuffix--)
         {
             if (_expected[_expectedSuffix] != _actual[_actualSuffix]) break;
         }
-        _suffix = _expected.Length - expectedSuffix;   
+        _suffixIndex = _expected.Length - expectedSuffix;   
     }
 
     private string ComputeCommonPrefix()
     {
-        return (_prefix > _contextLength ? ELLIPSIS : "") + _expected.Substring(Math.Max(0, _prefix - _contextLength), _prefix);       
+        return (_prefixIndex > _contextLength ? ELLIPSIS : "") + _expected.Substring(Math.Max(0, _prefixIndex - _contextLength), _prefixIndex);       
     }
 
     private string ComputeCommonSuffix()
     {
-        int end = Math.Min(_expected.Length - _suffix + 1 + _contextLength, _expected.Length);
-        return _expected.Substring(_expected.Length - _suffix + 1, end) + 
-            (_expected.Length - _suffix + 1 < _expected.Length - _contextLength ? ELLIPSIS : "");
+        int end = Math.Min(_expected.Length - _suffixIndex + 1 + _contextLength, _expected.Length);
+        return _expected.Substring(_expected.Length - _suffixIndex + 1, end) + 
+            (_expected.Length - _suffixIndex + 1 < _expected.Length - _contextLength ? ELLIPSIS : "");
     }
 
     private bool AreStringsEqual() { return _expected.Equals(_actual); }
