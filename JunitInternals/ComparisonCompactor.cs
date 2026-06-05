@@ -37,7 +37,7 @@ public class ComparisonCompactor
     private void CompactExpectedAndActual()
     {
         _prefixIndex = FindCommonPrefix();
-        _suffixIndex = FindCommonSuffix();
+        _suffixIndex = FindCommonSuffix(_prefixIndex);
         _compactExpected = CompactString(_expected);
         _compactActual = CompactString(_actual);        
     }
@@ -61,11 +61,11 @@ public class ComparisonCompactor
         return prefixIndex;
     }
 
-    private int FindCommonSuffix()
+    private int FindCommonSuffix(int prefixIndex)
     {
         int expectedSuffix = _expected.Length - 1;
         int actualSuffix = _actual.Length - 1;
-        for (; actualSuffix >= _prefixIndex && expectedSuffix >= _prefixIndex; actualSuffix--, expectedSuffix--)
+        for (; actualSuffix >= prefixIndex && expectedSuffix >= prefixIndex; actualSuffix--, expectedSuffix--)
         {
             if (_expected[expectedSuffix] != _actual[actualSuffix]) break;
         }
