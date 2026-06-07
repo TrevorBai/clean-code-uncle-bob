@@ -9,7 +9,7 @@ public class ComparisonCompactor
     private string _actual;
     private string _compactExpected;
     private string _compactActual; 
-    private int _prefixIndex;
+    private int _prefixLength;
     private int _suffixIndex;
 
     public ComparisonCompactor(int contextLength, string expected, string actual)
@@ -59,31 +59,31 @@ public class ComparisonCompactor
 
     private bool SuffixOverlapsPrefix(int suffixLength)
     {
-        return _actual.Length - suffixLength < _prefixIndex ||
-            _expected.Length - suffixLength < _prefixIndex;
+        return _actual.Length - suffixLength < _prefixLength ||
+            _expected.Length - suffixLength < _prefixLength;
     }
 
     private string CompactString(string source)
     {
-        string result = DELTA_START + source.Substring(_prefixIndex, source.Length - _suffixIndex + 1) + DELTA_END;
-        if (_prefixIndex > 0) result = ComputeCommonPrefix() + result;
+        string result = DELTA_START + source.Substring(_prefixLength, source.Length - _suffixIndex + 1) + DELTA_END;
+        if (_prefixLength > 0) result = ComputeCommonPrefix() + result;
         if (_suffixIndex > 0) result = result + ComputeCommonSuffix();
         return result;
     }
 
     private void FindCommonPrefix()
     {
-        _prefixIndex = 0;
+        _prefixLength = 0;
         int end = Math.Min(_expected.Length, _actual.Length);
-        for (; _prefixIndex < end; _prefixIndex++)
+        for (; _prefixLength < end; _prefixLength++)
         {
-            if (_expected[_prefixIndex] != _actual[_prefixIndex]) break;
+            if (_expected[_prefixLength] != _actual[_prefixLength]) break;
         }
     }
 
     private string ComputeCommonPrefix()
     {
-        return (_prefixIndex > _contextLength ? ELLIPSIS : "") + _expected.Substring(Math.Max(0, _prefixIndex - _contextLength), _prefixIndex);       
+        return (_prefixLength > _contextLength ? ELLIPSIS : "") + _expected.Substring(Math.Max(0, _prefixLength - _contextLength), _prefixLength);       
     }
 
     private string ComputeCommonSuffix()
