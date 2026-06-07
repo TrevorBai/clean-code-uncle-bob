@@ -44,13 +44,23 @@ public class ComparisonCompactor
     private void FindCommonPrefixAndSuffix()
     {
         FindCommonPrefix();
-        int expectedSuffix = _expected.Length - 1;
-        int actualSuffix = _actual.Length - 1;
-        for (; actualSuffix >= _prefixIndex && expectedSuffix >= _prefixIndex; actualSuffix--, expectedSuffix--)
+        int suffixLength = 1;
+        for (; !SuffixOverlapsPrefix(suffixLength); suffixLength++)
         {
-            if (_expected[expectedSuffix] != _actual[actualSuffix]) break;
+            if (CharFromEnd(_expected, suffixLength) != CharFromEnd(_actual, suffixLength)) break;
         }
-        _suffixIndex = _expected.Length - expectedSuffix;
+        _suffixIndex = suffixLength;
+    }
+
+    private char CharFromEnd(string s, int i)
+    {
+        return s[s.Length - i];
+    }
+
+    private bool SuffixOverlapsPrefix(int suffixLength)
+    {
+        return _actual.Length - suffixLength < _prefixIndex ||
+            _expected.Length - suffixLength < _prefixIndex;
     }
 
     private string CompactString(string source)
