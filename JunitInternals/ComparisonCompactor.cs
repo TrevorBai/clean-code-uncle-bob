@@ -64,10 +64,10 @@ public class ComparisonCompactor
 
     private string CompactString(string source)
     {
-        string result = DELTA_START + source.Substring(_prefixLength, source.Length - _suffixLength) + DELTA_END;
-        if (_prefixLength > 0) result = ComputeCommonPrefix() + result;
-        if (_suffixLength > 0) result = result + ComputeCommonSuffix();
-        return result;
+        return ComputeCommonPrefix() + 
+                DELTA_START + source.Substring(_prefixLength, source.Length - _suffixLength)
+                + DELTA_END
+                + ComputeCommonSuffix();
     }
 
     private void FindCommonPrefix()
