@@ -36,10 +36,21 @@ public class ComparisonCompactor
 
     private void CompactExpectedAndActual()
     {
-        _prefixIndex = FindCommonPrefix();
-        _suffixIndex = FindCommonSuffix(_prefixIndex);
+        FindCommonPrefixAndSuffix();       
         _compactExpected = CompactString(_expected);
         _compactActual = CompactString(_actual);        
+    }
+
+    private void FindCommonPrefixAndSuffix()
+    {
+        FindCommonPrefix();
+        int expectedSuffix = _expected.Length - 1;
+        int actualSuffix = _actual.Length - 1;
+        for (; actualSuffix >= _prefixIndex && expectedSuffix >= _prefixIndex; actualSuffix--, expectedSuffix--)
+        {
+            if (_expected[expectedSuffix] != _actual[actualSuffix]) break;
+        }
+        _suffixIndex = _expected.Length - expectedSuffix;
     }
 
     private string CompactString(string source)
@@ -50,26 +61,14 @@ public class ComparisonCompactor
         return result;
     }
 
-    private int FindCommonPrefix()
+    private void FindCommonPrefix()
     {
-        var prefixIndex = 0;
+        _prefixIndex = 0;
         int end = Math.Min(_expected.Length, _actual.Length);
-        for (; prefixIndex < end; prefixIndex++)
+        for (; _prefixIndex < end; _prefixIndex++)
         {
-            if (_expected[prefixIndex] != _actual[prefixIndex]) break;
+            if (_expected[_prefixIndex] != _actual[_prefixIndex]) break;
         }
-        return prefixIndex;
-    }
-
-    private int FindCommonSuffix(int prefixIndex)
-    {
-        int expectedSuffix = _expected.Length - 1;
-        int actualSuffix = _actual.Length - 1;
-        for (; actualSuffix >= prefixIndex && expectedSuffix >= prefixIndex; actualSuffix--, expectedSuffix--)
-        {
-            if (_expected[expectedSuffix] != _actual[actualSuffix]) break;
-        }
-        return _expected.Length - expectedSuffix;
     }
 
     private string ComputeCommonPrefix()
