@@ -7,8 +7,6 @@ public class ComparisonCompactor
     private int _contextLength;
     private string _expected;
     private string _actual;
-    private string _compactExpected;
-    private string _compactActual; 
     private int _prefixLength;
     private int _suffixLength;
 
@@ -21,31 +19,32 @@ public class ComparisonCompactor
 
     public string FormatCompactedComparison(string message)
     {
-        if (CanBeCompacted())
+        string compactExpected = _expected;
+        string compactActual = _actual;
+        if (ShouldBeCompacted())
         {
-            CompactExpectedAndActual();
-            return Assert.Format(message, _compactExpected, _compactActual);
+            FindCommonPrefixAndSuffix();       
+            compactExpected = Compact(_expected);
+            compactActual = Compact(_actual);
         }
-        return Assert.Format(message, _expected, _actual);
+        return Assert.Format(message, compactExpected, compactActual);
     }
 
-    private bool CanBeCompacted()
+    private bool ShouldBeCompacted()
     {
-        return _expected != null && _actual != null && !AreStringsEqual();
+        return !ShouldNotBeCompacted();
     }
 
-    private void CompactExpectedAndActual()
+    private bool ShouldNotBeCompacted()
     {
-        FindCommonPrefixAndSuffix();       
-        _compactExpected = CompactString(_expected);
-        _compactActual = CompactString(_actual);        
+        return _expected == null || _actual == null || _expected.Equals(_actual);
     }
 
     private void FindCommonPrefixAndSuffix()
     {
         FindCommonPrefix();
         _suffixLength = 0;
-        for (; !SuffixOverlapsPrefix(_suffixLength); _suffixLength++)
+        for (; !SuffixOverlapsPrefix(); _suffixLength++)
         {
             if (CharFromEnd(_expected, _suffixLength) != CharFromEnd(_actual, _suffixLength)) break;
         }
@@ -56,18 +55,10 @@ public class ComparisonCompactor
         return s[s.Length - i - 1];
     }
 
-    private bool SuffixOverlapsPrefix(int suffixLength)
+    private bool SuffixOverlapsPrefix()
     {
-        return _actual.Length - suffixLength <= _prefixLength ||
-            _expected.Length - suffixLength <= _prefixLength;
-    }
-
-    private string CompactString(string source)
-    {
-        return ComputeCommonPrefix() + 
-                DELTA_START + source.Substring(_prefixLength, source.Length - _suffixLength)
-                + DELTA_END
-                + ComputeCommonSuffix();
+        return _actual.Length - _suffixLength <= _prefixLength ||
+            _expected.Length - _suffixLength <= _prefixLength;
     }
 
     private void FindCommonPrefix()
@@ -80,18 +71,48 @@ public class ComparisonCompactor
         }
     }
 
-    private string ComputeCommonPrefix()
+    private string Compact(string s)
     {
-        return (_prefixLength > _contextLength ? ELLIPSIS : "") + _expected.Substring(Math.Max(0, _prefixLength - _contextLength), _prefixLength);       
+        return new StringBuilder()
+            .Append(StartingEllipsis())
+            .Append(StartingContext())
+            .Append(DELTA_START)
+            .Append(Delta(s))
+            .Append(DELTA_END)
+            .Append(EndingContext())
+            .Append(EndingEllipsis())
+            .ToString();
     }
 
-    private string ComputeCommonSuffix()
+    private string StartingEllipsis()
     {
-        int end = Math.Min(_expected.Length - _suffixLength + _contextLength, _expected.Length);
-        return _expected.Substring(_expected.Length - _suffixLength, end) + 
-            (_expected.Length - _suffixLength < _expected.Length - _contextLength ? ELLIPSIS : "");
+        return _prefixLength > _contextLength ? ELLIPSIS : "";
     }
 
-    private bool AreStringsEqual() { return _expected.Equals(_actual); }
+    private string StartingContext()
+    {
+        int contextStart = Math.Max(0, _prefixLength - _contextLength);
+        int contextEnd = _prefixLength;
+        return _expected.Substring(contextStart, contextEnd);       
+    }
+
+    private string Delta(string s)
+    {
+        int deltaStart = _prefixLength;
+        int deltaEnd = s.Length - _suffixLength;
+        return s.Substring(deltaStart, deltaEnd);
+    }
+
+    private string EndingContext()
+    {
+        int contextStart = _expected.Length - _suffixLength;
+        int contextEnd = Math.Min(contextStart + _contextLength, _expected.Length);
+        return _expected.Substring(contextStart, contextEnd);
+    }
+
+    private string EndingEllipsis()
+    {
+        return _suffixLength > _contextLength ? ELLIPSIS : "";
+    }
     
 }
