@@ -93,21 +93,21 @@ public class ComparisonCompactor
     {
         int contextStart = Math.Max(0, _prefixLength - _contextLength);
         int contextEnd = _prefixLength;
-        return _expected.Substring(contextStart, contextEnd);       
+        return _expected.Substring(contextStart, contextEnd - contextStart);
     }
 
     private string Delta(string s)
     {
         int deltaStart = _prefixLength;
         int deltaEnd = s.Length - _suffixLength;
-        return s.Substring(deltaStart, deltaEnd);
+        return s.Substring(deltaStart, deltaEnd - deltaStart);
     }
 
     private string EndingContext()
     {
         int contextStart = _expected.Length - _suffixLength;
         int contextEnd = Math.Min(contextStart + _contextLength, _expected.Length);
-        return _expected.Substring(contextStart, contextEnd);
+        return _expected.Substring(contextStart, contextEnd - contextStart);
     }
 
     private string EndingEllipsis()
