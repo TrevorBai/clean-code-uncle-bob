@@ -43,8 +43,7 @@ public class ComparisonCompactor
     private void FindCommonPrefixAndSuffix()
     {
         FindCommonPrefix();
-        _suffixLength = 0;
-        for (; !SuffixOverlapsPrefix(); _suffixLength++)
+        for (_suffixLength = 0; !SuffixOverlapsPrefix(); _suffixLength++)
         {
             if (CharFromEnd(_expected, _suffixLength) != CharFromEnd(_actual, _suffixLength)) break;
         }
