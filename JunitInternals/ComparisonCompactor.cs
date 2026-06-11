@@ -1,8 +1,8 @@
 public class ComparisonCompactor
 {
-    private static const string ELLIPSIS = "...";
-    private static const string DELTA_END = "]";
-    private static const string DELTA_START = "[";
+    private const string ELLIPSIS = "...";
+    private const string DELTA_END = "]";
+    private const string DELTA_START = "[";
 
     private int _contextLength;
     private string _expected;
