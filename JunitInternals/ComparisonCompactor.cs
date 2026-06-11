@@ -43,6 +43,8 @@ public class ComparisonCompactor
     private void FindCommonPrefixAndSuffix()
     {
         FindCommonPrefix();
+        // Claude says there is a subtle bug at the for loop when the suffix and prefix regions exactly meet.
+        // Not verify it yet. It's an off-by-one bug from Claude.
         for (_suffixLength = 0; !SuffixOverlapsPrefix(); _suffixLength++)
         {
             if (CharFromEnd(_expected, _suffixLength) != CharFromEnd(_actual, _suffixLength)) break;
