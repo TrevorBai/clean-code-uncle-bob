@@ -17,12 +17,9 @@ public class SpreadsheetDateFactory : DayDateFactory
 
     public DayDate MakeDate(DateOnly date)
     {
-        var calendar = new GregorianCalendar();
-        calendar.SetTime(date);
-        return new SpreadsheetDate(
-            calendar.Get(Calendar.DATE),
-            DayDate.Month.Make(calendar.Get(Calendar.MONTH) + 1),
-            calendar.Get(Calendar.YEAR)
+        return new SpreadsheetDate(date.Day,
+            DayDate.MonthHelper.FromIndex(date.Month),
+            date.Year
         );  
     }
 
