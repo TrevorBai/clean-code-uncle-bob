@@ -1,7 +1,6 @@
 [Serializable]
 public abstract class DayDate : IComparable<DayDate>, IEquatable<DayDate>
 {
-
     public static enum Month : byte
     {
         January = 1,
@@ -16,6 +15,15 @@ public abstract class DayDate : IComparable<DayDate>, IEquatable<DayDate>
         October = 10,
         November = 11,
         December = 12
+    }
+
+    public enum WeekInMonth
+    {
+        First = 1,
+        Second = 2,
+        Third = 3,
+        Fourth = 4,
+        Last = 0
     }
     
     public static class MonthHelper
