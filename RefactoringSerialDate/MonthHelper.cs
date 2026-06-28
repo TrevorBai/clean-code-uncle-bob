@@ -1,3 +1,5 @@
+using System.Globalization;
+
 public static class MonthHelper
 {
     public static enum Month
@@ -23,6 +25,9 @@ public static class MonthHelper
         return (Month)monthIndex;
     }
 
-
+    public static string[] GetMonthNames()
+    {
+        return CultureInfo.CurrentCulture.DateTimeFormat.MonthNames;
+    }
     
 }
