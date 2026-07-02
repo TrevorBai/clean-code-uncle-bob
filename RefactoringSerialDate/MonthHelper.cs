@@ -30,5 +30,10 @@ public static class MonthHelper
     {
         return CultureInfo.CurrentCulture.DateTimeFormat.MonthNames;
     }
+
+    public static int Quarter(Month month)
+    {
+        return 1 + ((int)month - 1) / 3;
+    }
     
 }
