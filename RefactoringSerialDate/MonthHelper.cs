@@ -45,5 +45,23 @@ public static class MonthHelper
     {
         return CultureInfo.CurrentCulture.DateTimeFormat.GetAbbreviatedMonthName((int)month);
     }
+
+    public static Month Parse(string s)
+    {
+        s = s.Trim();
+    
+        foreach (Month month in Enum.GetValues<Month>())
+            if (Matches(month, s)) return month;
+    
+        if (int.TryParse(s, out int index))
+            return FromIndex(index);
+        throw new ArgumentException($"Invalid month {s}");
+    }
+
+    private static bool Matches(Month month, string s)
+    {
+        return string.Equals(s, month.ToFullString(), StringComparison.OrdinalIgnoreCase)
+            || string.Equals(s, month.ToShortString(), StringComparison.OrdinalIgnoreCase);
+    }
     
 }
