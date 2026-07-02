@@ -35,5 +35,15 @@ public static class MonthHelper
     {
         return 1 + ((int)month - 1) / 3;
     }
+
+    public static string ToFullString(Month month)
+    {
+        return CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName((int)month);
+    }
+
+    public static string ToShortString(Month month)
+    {
+        return CultureInfo.CurrentCulture.DateTimeFormat.GetAbbreviatedMonthName((int)month);
+    }
     
 }
