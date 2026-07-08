@@ -9,6 +9,13 @@ public abstract class DayDate : IComparable<DayDate>, IEquatable<DayDate>
         Fourth = 4,
         Last = 0
     }
+
+    public static bool IsLeapYear(int year) {
+        bool fourth = year % 4 == 0;
+        bool hundredth = year % 100 == 0;
+        bool fourHundredth = year % 400 == 0;
+        return fourth && (!hundredth || fourHundredth);
+    }
     
     public abstract int CompareTo(DayDate other);
     public abstract bool Equals(DayDate other);
