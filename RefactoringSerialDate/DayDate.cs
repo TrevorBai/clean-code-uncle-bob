@@ -1,3 +1,5 @@
+using System;
+
 [Serializable]
 public abstract class DayDate : IComparable<DayDate>, IEquatable<DayDate>
 {
@@ -22,7 +24,22 @@ public abstract class DayDate : IComparable<DayDate>, IEquatable<DayDate>
         return DayDateFactory.MakeDate(ToOrdinal() + days);
     }
 
+    public DayDate AddMonths(int months)
+    {
+        int thisMonthAsOrdinal = 12 * GetYear() + (int)GetMonth() - 1;
+        int resultMonthAsOrdinal = thisMonthAsOrdinal + months;
+        int resultYear = resultMonthAsOrdinal / 12;
+        Month resultMonth = MonthHelper.FromIndex(resultMonthAsOrdinal % 12 + 1);      
+        int lastDayOfResultMonth = MonthHelper.LastDayOfMonth(resultMonth, resultYear);
+        int resultDay = Math.Min(GetDayOfMonth(), lastDayOfResultMonth);
+        return DayDateFactory.MakeDate(resultDay, resultMonth, resultYear);
+    }
+
+    public abstract int GetYear();
+    public abstract Month GetMonth();
+    public abstract int GetDayOfMonth();
     public abstract int ToOrdinal();
+    
     public abstract int CompareTo(DayDate other);
     public abstract bool Equals(DayDate other);
     // + override object.Equals, GetHashCode, and operators if desired 
