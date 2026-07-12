@@ -19,6 +19,26 @@ public static class MonthHelper
         December = 12
     }
 
+    public static int LastDay(Month month)
+    {
+        return month switch
+        {
+            Month.January   => 31,
+            Month.February  => 28, // base case, leap year handled by caller
+            Month.March     => 31,
+            Month.April     => 30,
+            Month.May       => 31,
+            Month.June      => 30,
+            Month.July      => 31,
+            Month.August    => 31,
+            Month.September => 30,
+            Month.October   => 31,
+            Month.November  => 30,
+            Month.December  => 31,
+            _ => throw new ArgumentException($"Invalid month {month}")
+        };
+    }
+
     public static Month FromIndex(int monthIndex)
     {
         if (monthIndex < 1 || monthIndex > 12)
@@ -63,5 +83,11 @@ public static class MonthHelper
         return string.Equals(s, month.ToFullString(), StringComparison.OrdinalIgnoreCase)
             || string.Equals(s, month.ToShortString(), StringComparison.OrdinalIgnoreCase);
     }
+
+    public static int LastDayOfMonth(Month month, int year)
+    {
+        int lastDay = LastDay(month);
+        return month == Month.February && DayDate.IsLeapYear(year) ? lastDay + 1 : lastDay;
+    } 
     
 }
