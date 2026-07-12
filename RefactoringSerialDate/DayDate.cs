@@ -16,7 +16,13 @@ public abstract class DayDate : IComparable<DayDate>, IEquatable<DayDate>
         bool fourHundredth = year % 400 == 0;
         return fourth && (!hundredth || fourHundredth);
     }
-    
+
+    public DayDate AddDays(int days)
+    {
+        return DayDateFactory.MakeDate(ToOrdinal() + days);
+    }
+
+    public abstract int ToOrdinal();
     public abstract int CompareTo(DayDate other);
     public abstract bool Equals(DayDate other);
     // + override object.Equals, GetHashCode, and operators if desired 
