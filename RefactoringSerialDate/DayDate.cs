@@ -19,12 +19,18 @@ public abstract class DayDate : IComparable<DayDate>, IEquatable<DayDate>
         return fourth && (!hundredth || fourHundredth);
     }
 
-    public DayDate AddDays(int days)
+    /// <summary>
+    /// The method name indicates it would return another object instead of mutating the existing object.
+    /// </summary>
+    public DayDate PlusDays(int days)
     {
         return DayDateFactory.MakeDate(ToOrdinal() + days);
     }
 
-    public DayDate AddMonths(int months)
+    /// <summary>
+    /// The method name indicates it would return another object instead of mutating the existing object.
+    /// </summary>
+    public DayDate PlusMonths(int months)
     {
         int thisMonthAsOrdinal = 12 * GetYear() + (int)GetMonth() - 1;
         int resultMonthAsOrdinal = thisMonthAsOrdinal + months;
@@ -35,7 +41,10 @@ public abstract class DayDate : IComparable<DayDate>, IEquatable<DayDate>
         return DayDateFactory.MakeDate(resultDay, resultMonth, resultYear);
     }
 
-    public DayDate AddYears(int years)
+    /// <summary>
+    /// The method name indicates it would return another object instead of mutating the existing object.
+    /// </summary>
+    public DayDate PlusYears(int years)
     {
         int resultYear = GetYear() + years;
         int lastDayOfMonthInResultYear = MonthHelper.LastDayOfMonth(GetMonth(), resultYear);
