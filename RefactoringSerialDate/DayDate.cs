@@ -35,6 +35,14 @@ public abstract class DayDate : IComparable<DayDate>, IEquatable<DayDate>
         return DayDateFactory.MakeDate(resultDay, resultMonth, resultYear);
     }
 
+    public DayDate AddYears(int years)
+    {
+        int resultYear = GetYear() + years;
+        int lastDayOfMonthInResultYear = MonthHelper.LastDayOfMonth(GetMonth(), resultYear);
+        int resultDay = Math.Min(GetDayOfMonth(), lastDayOfMonthInResultYear);
+        return DayDateFactory.MakeDate(resultDay, GetMonth(), resultYear);
+    }
+
     public abstract int GetYear();
     public abstract Month GetMonth();
     public abstract int GetDayOfMonth();
