@@ -52,9 +52,17 @@ public abstract class DayDate : IComparable<DayDate>, IEquatable<DayDate>
         return DayDateFactory.MakeDate(resultDay, GetMonth(), resultYear);
     }
 
+    public DayDate GetPreviousDayOfWeek(Day targetDayOfWeek)
+    {
+        int offsetToTarget = (int)targetDayOfWeek - (int)GetDayOfWeek();
+        if (offsetToTarget >= 0) offsetToTarget -= 7;
+        return PlusDays(offsetToTarget);  
+    }
+
     public abstract int GetYear();
     public abstract Month GetMonth();
     public abstract int GetDayOfMonth();
+    public abstract Day GetDayOfWeek();
     public abstract int ToOrdinal();
     
     public abstract int CompareTo(DayDate other);
