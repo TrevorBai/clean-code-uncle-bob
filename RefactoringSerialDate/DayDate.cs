@@ -12,6 +12,18 @@ public abstract class DayDate : IComparable<DayDate>, IEquatable<DayDate>
         Last = 0
     }
 
+    // Abstracts - implemented in SpreadsheetDate
+    public abstract int GetYear();
+    public abstract Month GetMonth();
+    public abstract int GetDayOfMonth();
+    public abstract int ToOrdinal();
+    public abstract Day GetDayOfWeek();
+    
+    public abstract int CompareTo(DayDate other);
+    public abstract bool Equals(DayDate other);
+    // + override object.Equals, GetHashCode, and operators if desired 
+
+    // Concrete date arithmetic
     public static bool IsLeapYear(int year) {
         bool fourth = year % 4 == 0;
         bool hundredth = year % 100 == 0;
@@ -52,6 +64,7 @@ public abstract class DayDate : IComparable<DayDate>, IEquatable<DayDate>
         return DayDateFactory.MakeDate(resultDay, GetMonth(), resultYear);
     }
 
+    // Concrete date navigation
     public DayDate GetPreviousDayOfWeek(Day targetDayOfWeek)
     {
         int offsetToTarget = (int)targetDayOfWeek - (int)GetDayOfWeek();
@@ -85,13 +98,4 @@ public abstract class DayDate : IComparable<DayDate>, IEquatable<DayDate>
         return DayDateFactory.MakeDate(lastDay, month, year);
     }
 
-    public abstract int GetYear();
-    public abstract Month GetMonth();
-    public abstract int GetDayOfMonth();
-    public abstract Day GetDayOfWeek();
-    public abstract int ToOrdinal();
-    
-    public abstract int CompareTo(DayDate other);
-    public abstract bool Equals(DayDate other);
-    // + override object.Equals, GetHashCode, and operators if desired 
 }
