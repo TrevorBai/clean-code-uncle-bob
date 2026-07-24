@@ -77,6 +77,14 @@ public abstract class DayDate : IComparable<DayDate>, IEquatable<DayDate>
         return PlusDays(offsetToFutureTarget);
     }
 
+    public DayDate GetEndOfMonth()
+    {
+        Month month = GetMonth();
+        int year = GetYear();
+        int lastDay = MonthHelper.LastDayOfMonth(month, year);
+        return DayDateFactory.MakeDate(lastDay, month, year);
+    }
+
     public abstract int GetYear();
     public abstract Month GetMonth();
     public abstract int GetDayOfMonth();
