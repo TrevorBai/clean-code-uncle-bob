@@ -66,6 +66,17 @@ public abstract class DayDate : IComparable<DayDate>, IEquatable<DayDate>
         return PlusDays(offsetToTarget);
     }
 
+    public DayDate GetNearestDayOfWeek(Day targetDay)
+    {
+        int offsetToThisWeeksTarget = (int)targetDay - (int)GetDayOfWeek();
+        int offsetToFutureTarget = (offsetToThisWeeksTarget + 7) % 7;
+        int offsetToPreviousTarget = offsetToFutureTarget - 7;
+
+        if (offsetToFutureTarget > 3)
+            return PlusDays(offsetToPreviousTarget);
+        return PlusDays(offsetToFutureTarget);
+    }
+
     public abstract int GetYear();
     public abstract Month GetMonth();
     public abstract int GetDayOfMonth();
