@@ -16,7 +16,7 @@ public abstract class DayDate : IComparable<DayDate>, IEquatable<DayDate>
     public abstract int GetYear();
     public abstract Month GetMonth();
     public abstract int GetDayOfMonth();
-    public abstract int ToOrdinal();
+    public abstract int GetOrdinalDay();
     public abstract Day GetDayOfWeek();
     
     public abstract int CompareTo(DayDate other);
@@ -36,7 +36,7 @@ public abstract class DayDate : IComparable<DayDate>, IEquatable<DayDate>
     /// </summary>
     public DayDate PlusDays(int days)
     {
-        return DayDateFactory.MakeDate(ToOrdinal() + days);
+        return DayDateFactory.MakeDate(GetOrdinalDay() + days);
     }
 
     /// <summary>
