@@ -23,6 +23,11 @@ public abstract class DayDate : IComparable<DayDate>, IEquatable<DayDate>
     public abstract bool Equals(DayDate other);
     // + override object.Equals, GetHashCode, and operators if desired 
 
+    public DateOnly ToDate()
+    {
+        return new DateOnly(GetYYYY(), (int)GetMonth(), GetDayOfMonth());
+    }
+
     // Concrete date arithmetic
     public static bool IsLeapYear(int year) {
         bool fourth = year % 4 == 0;
