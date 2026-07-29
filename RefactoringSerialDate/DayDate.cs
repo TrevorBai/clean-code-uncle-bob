@@ -13,7 +13,7 @@ public abstract class DayDate : IComparable<DayDate>, IEquatable<DayDate>
     }
 
     // Abstracts - implemented in SpreadsheetDate
-    public abstract int GetYear();
+    public abstract int GetYYYY();
     public abstract Month GetMonth();
     public abstract int GetDayOfMonth();
     public abstract int GetOrdinalDay();
@@ -44,7 +44,7 @@ public abstract class DayDate : IComparable<DayDate>, IEquatable<DayDate>
     /// </summary>
     public DayDate PlusMonths(int months)
     {
-        int thisMonthAsOrdinal = 12 * GetYear() + (int)GetMonth() - 1;
+        int thisMonthAsOrdinal = 12 * GetYYYY() + (int)GetMonth() - 1;
         int resultMonthAsOrdinal = thisMonthAsOrdinal + months;
         int resultYear = resultMonthAsOrdinal / 12;
         Month resultMonth = MonthHelper.FromIndex(resultMonthAsOrdinal % 12 + 1);      
@@ -58,7 +58,7 @@ public abstract class DayDate : IComparable<DayDate>, IEquatable<DayDate>
     /// </summary>
     public DayDate PlusYears(int years)
     {
-        int resultYear = GetYear() + years;
+        int resultYear = GetYYYY() + years;
         int lastDayOfMonthInResultYear = MonthHelper.LastDayOfMonth(GetMonth(), resultYear);
         int resultDay = Math.Min(GetDayOfMonth(), lastDayOfMonthInResultYear);
         return DayDateFactory.MakeDate(resultDay, GetMonth(), resultYear);
@@ -93,7 +93,7 @@ public abstract class DayDate : IComparable<DayDate>, IEquatable<DayDate>
     public DayDate GetEndOfMonth()
     {
         Month month = GetMonth();
-        int year = GetYear();
+        int year = GetYYYY();
         int lastDay = MonthHelper.LastDayOfMonth(month, year);
         return DayDateFactory.MakeDate(lastDay, month, year);
     }
