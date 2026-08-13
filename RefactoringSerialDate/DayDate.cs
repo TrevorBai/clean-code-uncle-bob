@@ -17,7 +17,7 @@ public abstract class DayDate : IComparable<DayDate>, IEquatable<DayDate>
     public abstract Month GetMonth();
     public abstract int GetDayOfMonth();
     public abstract int GetOrdinalDay();
-    public abstract Day GetDayOfWeek();
+    public abstract Day GetDayOfWeekForOrdinalZero();
     
     public abstract int CompareTo(DayDate other);
     public abstract bool Equals(DayDate other);
@@ -67,6 +67,13 @@ public abstract class DayDate : IComparable<DayDate>, IEquatable<DayDate>
         int lastDayOfMonthInResultYear = MonthHelper.LastDayOfMonth(GetMonth(), resultYear);
         int resultDay = Math.Min(GetDayOfMonth(), lastDayOfMonthInResultYear);
         return DayDateFactory.MakeDate(resultDay, GetMonth(), resultYear);
+    }
+
+    public Day GetDayOfWeek()
+    {
+        Day startingDay = GetDayOfWeekForOrdinalZero();
+        int startingOffset = (int)startingDay - (int)Day.Sunday;
+        return DayHelper.FromIndex((GetOrdinalDay() + startingOffset) % 7 + 1);
     }
 
     // Concrete date navigation
