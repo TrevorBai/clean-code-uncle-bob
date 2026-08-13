@@ -110,4 +110,12 @@ public abstract class DayDate : IComparable<DayDate>, IEquatable<DayDate>
         return DayDateFactory.MakeDate(lastDay, month, year);
     }
 
+    // Range checking
+    public bool IsInRange(DayDate d1, DayDate d2, DateInterval interval)
+    {
+        int left  = Math.Min(d1.GetOrdinalDay(), d2.GetOrdinalDay());
+        int right = Math.Max(d1.GetOrdinalDay(), d2.GetOrdinalDay());
+        return interval.IsIn(GetOrdinalDay(), left, right);
+    }
+
 }
