@@ -14,3 +14,11 @@ catch (NumberFormatException e)
 {
     // suppress
 }
+
+// Version 2:
+// first try parsing the string as an integer (1-12)...
+try 
+{
+    result = Integer.parseInt(s);
+}
+catch (NumberFormatException e) { } // No comments
